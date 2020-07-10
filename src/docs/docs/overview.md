@@ -20,7 +20,7 @@ NBomber as a modern framework provides:
 - Very flexible configuration and dead simple API
 - Cluster support
 - Realtime metrics
-- CI/CD integration
+- [CI/CD integration](./test-automation#cicd-integration)
 - Plugins/extensions support
 - Data feed support 
 

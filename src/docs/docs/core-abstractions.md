@@ -8,11 +8,11 @@ import TabItem from '@theme/TabItem';
 
 This document will help you learn about the NBomber core abstractions in detail. The whole API is mainly built around these building blocks:
 
-- Step 
-- Scenario
-- NBomber runner
-- Data feed
-- Connection pool
+- [Step](#step)
+- [Scenario](#scenario)
+- [NBomber runner](#nbomber-runner)
+- [Data feed](#data-feed)
+- [Connection pool](#connection-pool)
 
 ## Step
 
@@ -477,32 +477,37 @@ NBomberRunner.runWithArgs ["-c"; "./config.json"; "-i"; "./infra-config.json"]
 Data feed helps you to inject dynamic data into your test. It could be very valuable when you want to simulate different users which send different queries. Feed is representing a data source stream that you attach to your step and then NBomber is iterating over this stream taking some feed's item and setting it to [Step.Context.FeedItem](#step-context) public property.
 
 ```fsharp
+////////////////////////////////////
 // first, we create IFeedProvider to fetch data for our test
-// if you need you can build your IFeedProvider 
+// if you need you can implement your IFeedProvider 
 // to fetch data from any other source
+////////////////////////////////////
 
 let data = [1; 2; 3; 4; 5] |> FeedData.fromSeq |> FeedData.shuffleData
 let data = FeedData.fromJson<User>("users_feed_data.json")
 let data = FeedData.fromCsv<User>("users_feed_data.csv")
 
+////////////////////////////////////
 // second, we create Feed
+////////////////////////////////////
 
-// creates constant Feed that will take some random value once 
-// and return it always to the Step.
+// creates Feed that picks constant value per Step copy.
 // every Step copy will have unique constant value.
-let feed = Feed.createConstant "numbers" dataFromSeq
+let feed = Feed.createConstant "numbers" data
 
-// creates random
-let feed = Feed.createRandom "numbers" dataFromSeq
+// creates Feed that randomly picks an item per Step invocation.
+let feed = Feed.createRandom "numbers" data
 
+// creates Feed that returns values from  value on every Step invocation.
+let feed = Feed.createCircular "numbers" data
 
-//let feed = Feed.createRandom "numbers" data
-
+////////////////////////////////////
+// third, we attach feed to the step
+////////////////////////////////////
 let step = Step.create("simple step", feed, fun context -> task {
 
-    do! Task.Delay(TimeSpan.FromSeconds 1.0)
-
-    context.Logger.Information("Data from feed: {FeedItem}", context.FeedItem)
+    context.Logger.Information("Data from feed: {FeedItem}", context.FeedItem)    
+    
     return Response.Ok()
 })
 ```
