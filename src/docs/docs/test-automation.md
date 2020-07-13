@@ -99,4 +99,4 @@ An important benefit that load testing brings is the certainty that your system 
 In order to get integration you need:
 
 1. Integrate NBomber test with your current or favorite [test runner](#test-runner-integration) (*in terms of execution, your NBomber test will behave like a simple unit test*).
-2. Find an appropriate plugin for your test automation server to run your test (*for example, if you use [Jenkins](https://www.jenkins.io) for test automation server [xUnit](https://plugins.jenkins.io/xunit) and [NUnit](https://plugins.jenkins.io/nunit) integration plugins*).
+2. Find an appropriate plugin for your test automation server to run your test (*for example, if you use [Jenkins](https://www.jenkins.io) for test automation server then you can use [xUnit](https://plugins.jenkins.io/xunit) or [NUnit](https://plugins.jenkins.io/nunit) integration plugins*).

@@ -11,8 +11,8 @@ Welcome to NBomber! This tutorial will explore the basics of using NBomber and h
 ### Why we build NBomber and what you can do with it?
 
 1. The main reason behind NBomber is to provide a **lightweight** framework for writing load tests which you can use to test literally **any** system and simulate **any** production workload. 
-2. Another goal was to provide building blocks to validate your POC(proof of concept) projects by applying any complex load distribution. 
-3. With NBomber you can test any PULL or PUSH system(HTTP, WebSockets, SQL, GraphQl, gRPC, Redis etc). 
+2. Another goal was to provide building blocks to validate your POC(proof of concept) projects by applying any complex load distribution.  
+3. With NBomber you can test any PULL or PUSH system(HTTP, WebSockets, GraphQl, gRPC, SQL Databse, MongoDb, Redis etc). 
 
 NBomber as a modern framework provides:
 - Zero dependencies on protocol (HTTP/WebSockets/AMQP/SQL) 

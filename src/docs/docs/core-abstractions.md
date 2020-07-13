@@ -31,7 +31,7 @@ Step and Scenario are playing the most important role in building real-world sim
 ```fsharp
 // Step is a basic element which will be executed and measured
 type Step = {
-    Name: string    
+    StepName: string    
     Execute: StepContext -> Task<Response>
     ConnectionPool: ConnectionPool
     Feed: Feed
@@ -39,7 +39,7 @@ type Step = {
 
 // Scenario is a container for steps and load simulations
 type Scenario = {
-    Name: string
+    ScenarioName: string
     Steps: Step list     
     Init: (ScenarioContext -> Task) option 
     Clean: (ScenarioContext -> Task) option
@@ -431,7 +431,9 @@ NBomberRunner.registerScenarios [scenario1; scenario2; scenario3]
 NBomberRunner.withTestSuite "mongo_db"        
 
 /// Sets test name
-/// Default value is: nbomber_default_test_name
+/// Default value is: "nbomber_report_{current-date}"
+NBomberRunner.withTestName "analytical_queries"
+
 NBomberRunner.withTestName "analytical_queries"
 
 /// Loads configuration.
@@ -445,11 +447,21 @@ NBomberRunner.loadConfig "./config.json"
 /// - json (.json),
 /// - yaml (.yml, .yaml).
 NBomberRunner.loadInfraConfig "./infra-config.json"
-    
-/// Adds reporting sinks    
+
+/// Sets logger configuration.
+/// Make sure that you always return a new instance of LoggerConfiguration.
+/// You can also configure logger via configuration file.
+/// For this use NBomberRunner.loadInfraConfig
+NBomberRunner.withLoggerConfig(fun () -> 
+    LoggerConfiguration().WriteTo.Elasticsearch(
+        ElasticsearchSinkOptions(Uri "http://localhost:9200")
+    )
+)    
+
+/// Sets reporting sinks    
 NBomberRunner.withReportingSinks([influxDbSink], sendStatsInterval = seconds 30)
 
-/// Adds plugins
+/// Sets plugins
 NBomberRunner.withPlugins [pingPlugin]
 
 /// Sets application type.

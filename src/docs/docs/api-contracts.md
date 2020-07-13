@@ -52,8 +52,8 @@ type IStepContext<'TConnection,'TFeedItem> =
 ```fsharp
 type Scenario = {
     ScenarioName: string
-    TestInit: (ScenarioContext -> Task) option
-    TestClean: (ScenarioContext -> Task) option
+    Init: (ScenarioContext -> Task) option
+    Clean: (ScenarioContext -> Task) option
     Steps: IStep list
     WarmUpDuration: TimeSpan
     LoadSimulations: LoadSimulation list
@@ -160,6 +160,7 @@ type ReportFormat =
     | Txt = 0
     | Html = 1
     | Csv = 2
+    | Md = 3
     
 type ReportFile = {
     FilePath: string
@@ -193,6 +194,7 @@ type NBomberContext = {
     RegisteredScenarios: Scenario list
     NBomberConfig: NBomberConfig option
     InfraConfig: IConfiguration option
+    CreateLoggerConfig: (unit -> LoggerConfiguration) option
     ReportFileName: string option
     ReportFormats: ReportFormat list
     ReportingSinks: IReportingSink list
