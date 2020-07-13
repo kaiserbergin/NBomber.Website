@@ -7,7 +7,10 @@ module.exports = {
   organizationName: 'Pragmatic Flow', // Usually your GitHub org/user name.
   projectName: 'NBomber', // Usually your repo name.
   themeConfig: {
-    disableDarkMode: true,
+    disableDarkMode: true,    
+    gtag: {
+      trackingID: 'UA-139868155-1'
+    },
     navbar: {
       title: '',
       logo: {
