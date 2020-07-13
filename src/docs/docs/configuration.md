@@ -148,13 +148,14 @@ So far you have seen how you can configure NBomber API features via configuratio
    "CustomSettings": { "FiledA": "A"; "FieldB": "B" }
  }
  ```
- 
+TBD
+
+<!--  
 and NBomber will inject it into the test runtime. Let's pretend that we need to inject SQL connection string, into our scenario:
 
 Our next step is to fetch custom config into our test. For this we have one entry point: Scenario Init
 
-For example SQL connection string or connection count
 
 ## Customizing connection pool
 
-## Infrastracture configuration
+## Infrastracture configuration -->

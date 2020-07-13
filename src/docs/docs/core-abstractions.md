@@ -213,7 +213,7 @@ Simulates pause behavior.
 
 ```fsharp
 /// Creates pause step with specified duration.
-Step.createPause(TimeSpan.FromSeconds 10.0)
+Step.createPause(minutes 1)
 Step.createPause(seconds 10)
 Step.createPause(milliseconds 200)
 

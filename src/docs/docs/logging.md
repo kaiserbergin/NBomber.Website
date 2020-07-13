@@ -9,7 +9,7 @@ NBomber is using [Serilog](https://serilog.net/) library for logging. You don't 
 
 :::
 
-In order to start logging you need to take [Step.Context]() or [Scenario.Context]() and access Logger interface. Here is an example:
+In order to start logging you need to take [Step.Context](core-abstractions#step-context) or [Scenario.Context](core-abstractions#scenario-context) and access Logger interface. Here is an example:
 
 
 ```fsharp
@@ -26,8 +26,11 @@ Scenario.create "scenario_name" [step]
     context.Logger.Information("test stopped!")        
 })
 ```
-### Configuring logging
+
+TBD
+
+<!-- ### Configuring logging
 
 ### Sinks your logs to Elastic Search
 
-gif animation
+gif animation -->

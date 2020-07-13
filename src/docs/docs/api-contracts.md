@@ -13,7 +13,7 @@ type CorrelationId = {
 }
 
 type Response = {
-    mutable Payload: obj
+    Payload: obj
     SizeBytes: int
     Exception: exn option
     LatencyMs: int
