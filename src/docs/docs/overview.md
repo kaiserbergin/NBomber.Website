@@ -11,8 +11,8 @@ Welcome to NBomber! This tutorial will explore the basics of using NBomber and h
 ### Why we build NBomber and what you can do with it?
 
 1. The main reason behind NBomber is to provide a **lightweight** framework for writing load tests which you can use to test literally **any** system and simulate **any** production workload. 
-2. Another goal was to provide building blocks to validate your POC(proof of concept) projects by applying any complex load distribution.  
-3. With NBomber you can test any PULL or PUSH system(HTTP, WebSockets, GraphQl, gRPC, SQL Databse, MongoDb, Redis etc). 
+2. Another goal was to provide building blocks to validate your POC (proof of concept) projects by applying any complex load distribution.  
+3. With NBomber you can test any PULL or PUSH system (HTTP, WebSockets, GraphQl, gRPC, SQL Databse, MongoDb, Redis etc). 
 
 NBomber as a modern framework provides:
 - Zero dependencies on protocol (HTTP/WebSockets/AMQP/SQL) 
@@ -87,7 +87,7 @@ let main argv =
         // for example: send http request, SQL query etc
         // NBomber will measure how much time it takes to execute your step
 
-        do! Task.Delay(TimeSpan.FromSeconds 1.0)
+        do! Task.Delay(seconds 1)
         return Response.Ok()
     })
 
@@ -126,7 +126,7 @@ namespace NBomberTest
                 // for example: send http request, SQL query etc
                 // NBomber will measure how much time it takes to execute your logic
 
-                await Task.Delay(TimeSpan.FromSeconds(1.0));
+                await Task.Delay(seconds 1);
                 return Response.Ok();
             });
             
@@ -248,7 +248,7 @@ let main argv =
     
     Scenario.create "hello_world" [step]     
     |> Scenario.withLoadSimulations [
-        InjectScenariosPerSec(100, TimeSpan.FromSeconds 10.0)
+        InjectScenariosPerSec(100, seconds 10)
     ]
     |> NBomberRunner.registerScenario
     |> NBomberRunner.run
@@ -267,13 +267,13 @@ let main argv =
 
 Finally, you reach this point! Here you can find additional information which helps you in building real world NBomber tests:
 
-- [View and analyze reports](./analyze-reports)
+<!-- - [View and analyze reports](./analyze-reports)
 - [Add dynamic configuration](./configuration)
 - [Add test assertions and CI/CD integration](./test_assertions)
 - [Add realtime metrics](./realtime_metrics)
-- [Add distributed cluster support](./cluster_overview)
+- [Add distributed cluster support](./cluster_overview) -->
 
-Now, let's add HTTP client to test some web server.
+<!-- Now, let's add HTTP client to test some web server.
 
 5. View and analyze statistics results
 
@@ -285,86 +285,10 @@ After several runs of this test, you will be able to define asserts based on sta
 
 You can think of NBomber as a process that runs load tests and returns the result and then it's your decision what to do with this result(ignore, analyze, throw an exception).
 
-<Tabs
-  groupId="example"
-  defaultValue="F#"
-  values={[
-    {label: 'F#', value: 'F#'},
-    {label: 'C#', value: 'C#'},
-  ]
-}>
-<TabItem value="F#">
-
-For F# example we will use [XUnit](https://xunit.net/) and [Unquote](https://github.com/SwensenSoftware/unquote) library.
-```fsharp
-open System
-open System.Threading.Tasks
-open Xunit
-open Swensen.Unquote
-open FSharp.Control.Tasks.V2.ContextInsensitive
-open NBomber.Contracts
-open NBomber.FSharp
-
-[<Fact>]
-let ``NBomber load test`` () =
-
-    let step = Step.create("step", fun context -> task {
-        do! Task.Delay(TimeSpan.FromSeconds 1.0)
-        return Response.Ok()
-    })
-
-    Scenario.create "hello_world" [step]
-    |> NBomberRunner.registerScenario
-    |> NBomberRunner.run
-    |> function
-        | Ok stats ->
-            let stepStats = stats.ScenarioStats.[0].StepStats.[0]
-            test <@ stepStats.OkCount > 2 @>
-            test <@ stepStats.FailCount = 0 @>            
-        
-        | Error msg -> failwith msg
-```
-</TabItem>
-
-<TabItem value="C#">
-
-For C# example we will use [NUnit](https://nunit.org/)
-```csharp
-using System;
-using System.Threading.Tasks;
-using NUnit.Framework;
-using NBomber.Contracts;
-using NBomber.CSharp;
-
-namespace NUnitNBomberTest
-{
-    public class Tests
-    {
-        [Test]
-        public void NBomber_Load_Test()
-        {   
-            var step = Step.Create("step", async context =>
-            {                
-                await Task.Delay(TimeSpan.FromSeconds(1.0));
-                return Response.Ok();
-            });
-            
-            var scenario = ScenarioBuilder.CreateScenario("hello_world", step);
-            var stats = NBomberRunner.RegisterScenarios(scenario).Run();
-            
-            Assert.IsTrue(stepStats.OkCount > 2);
-            Assert.IsTrue(stepStats.FailCount == 0);            
-        }
-    }
-}
-```
-</TabItem>
-</Tabs>
-
 7. Integrate load test into your CI/CD pipeline
 
 Now you can easily integrate NBomber load tests into your CI/CD pipeline (Jenkins, TeamCity, Bamboo) since NBomber test can be executed by any popular unit test framework.
 
 8. Add realtime metrics
 
-NBomber provides a way to sink your test results in any data storage. It helps you track performance trends in a realtime and make comparison with previous results(historicals). [Read mode]()
+NBomber provides a way to sink your test results in any data storage. It helps you track performance trends in a realtime and make comparison with previous results(historicals). [Read mode]() -->

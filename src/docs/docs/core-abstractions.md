@@ -83,7 +83,7 @@ for step in scenario.Steps do
 
 :::note
 
-All steps within one scenario are always executing sequentially. Every step is running in an isolated lightweight thread(*Task<'T>*) provided by Scenario.
+All steps within one scenario are always executing sequentially. Every step is running in an isolated lightweight thread (*Task<'T>*) provided by Scenario.
 
 :::
 
@@ -295,7 +295,7 @@ type IStepContext<'TConnection,'TFeedItem> =
 
 ## Scenario
 
-Scenario is helping you to organize steps into sequential flow with different load simulations(concurrency control). 
+Scenario is helping you to organize steps into sequential flow with different load simulations (concurrency control). 
 
 ```fsharp
 Scenario.create "scenario" [step1; step2; step3; step4]
@@ -306,15 +306,15 @@ Scenario.create "scenario" [step1; step2; step3; step4]
 
 :::note
 
-Technically speaking Scenario represents a lightweight thread(*Task<'T>*) of execution and NBomber is allowing to create many copies of such scenario to simulate parallel execution. Scenarios are always running in parallel.
+Technically speaking Scenario represents a lightweight thread (*Task<'T>*) of execution and NBomber is allowing to create many copies of such scenario to simulate parallel execution. Scenarios are always running in parallel.
 
 :::
 
 ### Load simulations
 
 When it comes to load simulation, systems behave in 2 different ways:
-- Closed systems, where you keep a constant number of concurrent clients and they waiting on a response before sending a new request. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients
-- Open systems, where you keep arrival rate of new clients requests without waitng on responses. The good example could be some popular website like Amazon. Under the load new clients will arriving even though applications have trouble serving them. 
+- Closed systems, where you keep a constant number of concurrent clients and **they waiting on a response before sending a new request**. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients
+- Open systems, where you keep arrival rate of new clients requests **without waitng on responses**. The good example could be some popular website like Amazon. Under the load new clients will arriving even though applications have trouble serving them. 
 
 :::note
 

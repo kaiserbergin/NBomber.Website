@@ -16,6 +16,8 @@ module.exports = {
       logo: {
         alt: 'NBomber',
         src: 'img/nbomber-logo.svg',
+        href: 'https://nbomber.com',
+        target: '_self'
       },
       links: [
         {
