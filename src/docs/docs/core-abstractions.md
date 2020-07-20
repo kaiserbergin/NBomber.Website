@@ -6,7 +6,7 @@ title: Core abstractions
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This document will help you learn about the NBomber core abstractions in detail. The whole API is mainly built around these building blocks:
+This document will help you learn about NBomber core abstractions in more detail. The whole API is mainly built around these building blocks:
 
 - [Step](#step)
 - [Scenario](#scenario)
@@ -16,7 +16,7 @@ This document will help you learn about the NBomber core abstractions in detail.
 
 ## Step
 
-Step and Scenario are playing the most important role in building real-world simulations. Step is helping you to define your test function only. Scenario is helping you to organize steps into test flow with different load simulations(concurrency control). 
+Step and Scenario play the most important role in building real-world simulations. A Step helps you to define only your test function. A Scenario is helping you to organize steps into test flow with different load simulations (concurrency control). 
 
 <Tabs
   groupId="example"
@@ -54,7 +54,7 @@ type Scenario = {
 
 </Tabs>
 
-You can think of Step like a function which execution time will be measured.
+You can think of a Step like a function which execution time will be measured.
 
 ```fsharp
 // it's pseudocode example 
@@ -83,7 +83,7 @@ for step in scenario.Steps do
 
 :::note
 
-All steps within one scenario are always executing sequentially. Every step is running in an isolated lightweight thread (*Task<'T>*) provided by Scenario.
+All steps within one scenario always execute sequentially. Every step runs in isolated a lightweight thread (*Task<'T>*) provided by a Scenario.
 
 :::
 
@@ -188,19 +188,19 @@ Scenario.create "scenario" [step1; step2]
 // step 1 response is '42'
 ```
 
-NBomber provides a way to set the size of response to later use it for statistics related to data transfer.
+NBomber provides a way to set the size of a response for later usage for statistics related to data transfering.
 
 ```fsharp
 Response.Ok(payload = "some HTTP response", sizeBytes = 200)
 ```
 
-Also, you can set even your own latency if you know that you need to correct the final value(it could be useful for PUSH scenarios when your response was buffered, meaning that you received it earlier than NBomber function was invoked).
+Also, you can set even your own latency if you know that you need to correct the final value (it could be useful for PUSH scenarios when your response is buffered, meaning that you receive it earlier than NBomber function was invoked).
 
 ```fsharp
 Response.Ok(latencyMs = 200)
 ```
 
-You also can return fail.
+You also can return a fail.
 ```fsharp
 Response.Fail()
 Response.Fail(reason: string)
@@ -209,7 +209,7 @@ Response.Fail(ex: Exception)
 
 ### Step pause
 
-Simulates pause behavior.
+Simulate a pause behavior.
 
 ```fsharp
 /// Creates pause step with specified duration.
@@ -238,7 +238,7 @@ Please read this [page](./logging)
 
 ### Step context
 
-Every step is running in separated lightweight thread (*Task<'T>*) and has its own context.
+Every step is running in a separated lightweight thread (*Task<'T>*) and has its own context.
 
 ```fsharp
 let step = Step.create("step", fun context -> task {             
@@ -306,7 +306,7 @@ Scenario.create "scenario" [step1; step2; step3; step4]
 
 :::note
 
-Technically speaking Scenario represents a lightweight thread (*Task<'T>*) of execution and NBomber is allowing to create many copies of such scenario to simulate parallel execution. Scenarios are always running in parallel.
+Technically speaking Scenario represents a lightweight thread (*Task<'T>*) of execution and NBomber allows to create many copies of such scenario to simulate parallel execution. Scenarios always run in parallel.
 
 :::
 
@@ -314,7 +314,7 @@ Technically speaking Scenario represents a lightweight thread (*Task<'T>*) of ex
 
 When it comes to load simulation, systems behave in 2 different ways:
 - Closed systems, where you keep a constant number of concurrent clients and **they waiting on a response before sending a new request**. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients
-- Open systems, where you keep arrival rate of new clients requests **without waitng on responses**. The good example could be some popular website like Amazon. Under the load new clients will arriving even though applications have trouble serving them. 
+- Open systems, where you keep arrival rate of new clients requests **without waitng on responses**. The good example could be some popular website like Amazon. Under the load new clients arrive even though applications have trouble serving them. 
 
 :::note
 
@@ -486,7 +486,7 @@ NBomberRunner.runWithArgs ["-c"; "./config.json"; "-i"; "./infra-config.json"]
 
 ## Data feed
 
-Data feed helps you to inject dynamic data into your test. It could be very valuable when you want to simulate different users which send different queries. Feed is representing a data source stream that you attach to your step and then NBomber is iterating over this stream taking some feed's item and setting it to [Step.Context.FeedItem](#step-context) public property.
+Data feed helps you to inject dynamic data into your test. It could be very valuable when you want to simulate different users which send different queries. Feed represents a data source stream that you attach to your step and then NBomber iterates over this stream taking some feed's item and setting it to [Step.Context.FeedItem](#step-context) public property.
 
 ```fsharp
 ////////////////////////////////////
