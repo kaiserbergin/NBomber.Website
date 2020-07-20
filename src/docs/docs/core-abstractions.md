@@ -300,7 +300,7 @@ Scenario is helping you to organize steps into sequential flow with different lo
 ```fsharp
 Scenario.create "scenario" [step1; step2; step3; step4]
 |> Scenario.withLoadSimulations [
-    InjectScenariosPerSec(copiesCount = 10, during = seconds 30)
+    InjectPerSec(rate = 10, during = seconds 30)
 ]
 ```
 
@@ -328,23 +328,23 @@ Scenario.withLoadSimulations [
     /// Injects a given number of scenario copies 
     /// with a linear ramp over a given duration.
     /// Use it for ramp up and rump down.
-    RampConcurrentScenarios(copiesCount = 10, during = seconds 30)
+    RampConstant(copies = 10, during = seconds 30)
 
     /// For closed system:
     /// Injects a given number of scenario copies 
     /// at once and keep them running, during a given duration. 
-    KeepConcurrentScenarios(copiesCount = 10, during = seconds 30)
+    KeepConstant(copies = 10, during = seconds 30)
 
     /// For open system:
     /// Injects a given number of scenario copies 
     /// from starting rate to target rate, 
     /// defined in scenarios per second, during a given duration. 
-    RampScenariosPerSec(copiesCount = 10, during = seconds 30)
+    RampPerSec(rate = 10, during = seconds 30)
 
     /// For open system:
     /// Injects a given number of scenario copies at a constant rate, 
     /// defined in scenarios per second, during a given duration. 
-    InjectScenariosPerSec(copiesCount = 10, during = seconds 30)
+    InjectPerSec(rate = 10, during = seconds 30)
 ]
 ```
 

@@ -158,4 +158,8 @@ Our next step is to fetch custom config into our test. For this we have one entr
 
 ## Customizing connection pool
 
-## Infrastracture configuration -->
+## Infrastracture configuration 
+
+## CLI arguments
+-->
+

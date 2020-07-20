@@ -248,7 +248,7 @@ let main argv =
     
     Scenario.create "hello_world" [step]     
     |> Scenario.withLoadSimulations [
-        InjectScenariosPerSec(100, seconds 10)
+        InjectPerSec(rate = 100, during = seconds 10)
     ]
     |> NBomberRunner.registerScenario
     |> NBomberRunner.run

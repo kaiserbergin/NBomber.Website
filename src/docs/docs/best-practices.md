@@ -4,6 +4,8 @@ title: Best practices
 ---
 
 TBD
+<!-- 
+## Load simulations
 
 ## Test structure
  
@@ -23,4 +25,4 @@ When you asked about how good some stream of something is performing, you should
     Response time
     Footprint
 
-The relation between throughput and latency is described by Little’s law.
+The relation between throughput and latency is described by Little’s law. -->

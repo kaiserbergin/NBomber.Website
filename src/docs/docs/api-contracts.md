@@ -67,10 +67,10 @@ type ScenarioContext = {
 }
 
 type LoadSimulation =
-    | RampConcurrentScenarios of copiesCount:int * during:TimeSpan
-    | KeepConcurrentScenarios of copiesCount:int * during:TimeSpan
-    | RampScenariosPerSec     of copiesCount:int * during:TimeSpan
-    | InjectScenariosPerSec   of copiesCount:int * during:TimeSpan
+    | RampConstant of copies:int * during:TimeSpan
+    | KeepConstant of copies:int * during:TimeSpan
+    | RampPerSec   of rate:int   * during:TimeSpan
+    | InjectPerSec of rate:int   * during:TimeSpan
 ```
 
 ### Statistics contracts
@@ -201,5 +201,42 @@ type NBomberContext = {
     SendStatsInterval: TimeSpan
     Plugins: IPlugin list
     ApplicationType: ApplicationType option
+}
+```
+
+### NBomber configuration contracts
+
+```fsharp
+type LoadSimulationSettings =
+    | RampConstant of copies:int * during:string
+    | KeepConstant of copies:int * during:string
+    | RampPerSec   of rate:int   * during:string
+    | InjectPerSec of rate:int   * during:string
+
+type ConnectionPoolSetting = {
+    PoolName: string
+    ConnectionCount: int
+}
+
+type ScenarioSetting = {
+    ScenarioName: string
+    WarmUpDuration: string
+    LoadSimulationsSettings: LoadSimulationSettings list
+    ConnectionPoolSettings: ConnectionPoolSetting list option
+    CustomSettings: string option
+}
+
+type GlobalSettings = {
+    ScenariosSettings: ScenarioSetting list option
+    ReportFileName: string option
+    ReportFormats: ReportFormat list option
+    SendStatsInterval: string option
+}
+
+type NBomberConfig = {
+    TestSuite: string option
+    TestName: string option
+    TargetScenarios: string list option
+    GlobalSettings: GlobalSettings option
 }
 ```
