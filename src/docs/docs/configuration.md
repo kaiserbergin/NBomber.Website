@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 ## Test configuration
 
-NBomber provides a way to configure your test via JSON or YAML configuration files. Instead of hardcoding some values you can put them in the config and then load it. Take a look first on the configuration via NBomber API(*F# or C#*) and then choose your favorite format(*JSON or YAML*).
+NBomber provides a way to configure your test via JSON or YAML configuration files. Instead of hardcoding some values you can put them in the config and then load it. Take a look first on the configuration via NBomber API (*F# or C#*) and then choose your favorite format (*JSON or YAML*).
 
 <Tabs
   groupId="config"

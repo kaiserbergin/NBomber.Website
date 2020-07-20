@@ -11,7 +11,7 @@ Welcome to NBomber! This tutorial will explore the basics of using NBomber and h
 ### Why we build NBomber and what you can do with it?
 
 1. The main reason behind NBomber is to provide a **lightweight** framework for writing load tests which you can use to test literally **any** system and simulate **any** production workload. 
-2. Another goal was to provide building blocks to validate your POC (proof of concept) projects by applying any complex load distribution.  
+2. Another goal is to provide building blocks to validate your POC (proof of concept) projects by applying any complex load distribution.  
 3. With NBomber you can test any PULL or PUSH system (HTTP, WebSockets, GraphQl, gRPC, SQL Databse, MongoDb, Redis etc). 
 
 NBomber as a modern framework provides:
@@ -150,11 +150,11 @@ namespace NBomberTest
 dotnet run -c Release
 ```
 
-After running a test you will get report. Don't be scary, we can skip it for now, later we will understand how to analyse such reports.
+After running a test you will get report. Don't get scared, we can skip it for now. Later we will understand how to analyse such reports.
 
 ### Create simple HTTP load test
 
-Now, let's add HTTP client to test some web server and then run it. 
+Now, let's add HTTP client to test a web server and then run it. 
 
 <Tabs
   groupId="example"

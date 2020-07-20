@@ -5,7 +5,7 @@ title: Logging
 
 :::note
 
-NBomber is using [Serilog](https://serilog.net/) library for logging. You don't need to install it. If you haven't used it before, you will be amazed at how cool it is.
+NBomber uses [Serilog](https://serilog.net/) library for logging. You don't need to install it. If you haven't used it before, you will be amazed how cool it is.
 
 :::
 
