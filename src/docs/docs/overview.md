@@ -18,11 +18,11 @@ NBomber as a modern framework provides:
 - Zero dependencies on protocol (HTTP/WebSockets/AMQP/SQL) 
 - Zero dependencies on semantic model (Pull/Push)
 - Very flexible configuration and dead simple API
-- Cluster support
-- Realtime metrics
-- [CI/CD integration](./test-automation#cicd-integration)
+- [Cluster support](cluster-overview)
+- [Realtime metrics](realtime-metrics)
+- [CI/CD integration](test-automation#cicd-integration)
 - Plugins/extensions support
-- Data feed support 
+- [Data feed support](core-abstractions#data-feed) 
 
 ## Step by step introduction
 

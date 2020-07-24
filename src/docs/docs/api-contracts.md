@@ -3,7 +3,7 @@ id: api-contracts
 title: API Contracts
 ---
 
-### Step contracts
+## Step contracts
 
 ```fsharp
 type CorrelationId = {
@@ -47,7 +47,7 @@ type IStepContext<'TConnection,'TFeedItem> =
     abstract StopCurrentTest: reason:string -> unit
 ```
 
-### Scenario contracts
+## Scenario contracts
 
 ```fsharp
 type Scenario = {
@@ -73,7 +73,7 @@ type LoadSimulation =
     | InjectPerSec of rate:int   * during:TimeSpan
 ```
 
-### Statistics contracts
+## Statistics contracts
 
 ```fsharp
 type TestInfo = {
@@ -153,7 +153,7 @@ type NodeStats = {
 }
 ```
 
-### NBomber context contracts
+## NBomber context contracts
 
 ```fsharp
 type ReportFormat =
@@ -204,7 +204,7 @@ type NBomberContext = {
 }
 ```
 
-### NBomber configuration contracts
+## NBomber configuration contracts
 
 ```fsharp
 type LoadSimulationSettings =

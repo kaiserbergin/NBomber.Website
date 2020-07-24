@@ -313,8 +313,8 @@ Technically speaking Scenario represents a lightweight thread (*Task<'T>*) of ex
 ### Load simulations
 
 When it comes to load simulation, systems behave in 2 different ways:
-- Closed systems, where you keep a constant number of concurrent clients and **they waiting on a response before sending a new request**. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients
-- Open systems, where you keep arrival rate of new clients requests **without waitng on responses**. The good example could be some popular website like Amazon. Under the load new clients arrive even though applications have trouble serving them. 
+- Closed systems, where you keep a constant number of concurrent clients and they waiting on a response before sending a new request. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients. Usually, in real-world scenarios systems with persisted connections (RabbitMq, Kafka, WebSockets, Databases) are tested as closed systems.
+- Open systems, where you keep arrival rate of new clients requests without waitng on responses. The good example could be some popular website like Amazon. Under the load new clients arrive even though applications have trouble serving them. Usually, in real-world scenarios systems that use stateless protocols like HTTP are tested as open systems.
 
 :::note
 
@@ -337,7 +337,7 @@ Scenario.withLoadSimulations [
 
     /// For open system:
     /// Injects a given number of scenario copies 
-    /// from starting rate to target rate, 
+    /// from the current rate to target rate, 
     /// defined in scenarios per second, during a given duration. 
     RampPerSec(rate = 10, during = seconds 30)
 

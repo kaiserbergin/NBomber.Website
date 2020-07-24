@@ -30,10 +30,10 @@ Scenario.create "hello_world" [step1; step2; step3]
 |> Scenario.withWarmUpDuration(seconds 1)
 |> Scenario.withoutWarmUp
 |> Scenario.withLoadSimulations [
-    RampConcurrentScenarios(copies 10, seconds 10)
-    KeepConcurrentScenarios(copies 10, seconds 10)
-    RampScenariosPerSec(copies 10, seconds 10)
-    InjectScenariosPerSec(copies 10, seconds 10)
+    RampConstant(copies = 10, during = seconds 10)
+    KeepConstant(copies = 10, during = seconds 10)
+    RampPerSec(rate = 10, during = seconds 10)
+    InjectPerSec(rate = 10, during = seconds 10)
 ]
 
 // nbomber runner configuration
@@ -45,7 +45,7 @@ Scenario.create "hello_world" [step1; step2; step3]
 |> NBomberRunner.withTestName "insert_data"
 
 |> NBomberRunner.withReportFileName "my_report"
-|> NBomberRunner.withReportFormats [ReportFormat.Txt; ReportFormat.Csv; ReportFormat.Html]
+|> NBomberRunner.withReportFormats [ReportFormat.Txt; ReportFormat.Csv; ReportFormat.Html; ReportFormat.Md]
 |> NBomberRunner.withoutReports
 |> NBomberRunner.withReportingSinks [influxDbSink; prometheusSink]    
     
@@ -73,10 +73,10 @@ Scenario.create "hello_world" [step1; step2; step3]
       "WarmUpDuration": "00:00:05",
 
       "LoadSimulationsSettings": [
-        { "RampConcurrentScenarios": [100, "00:00:50"] },
-        { "KeepConcurrentScenarios": [100, "00:00:50"] },
-        { "InjectScenariosPerSec": [5, "00:00:05"] },
-        { "RampScenariosPerSec": [5, "00:00:05"] }
+        { "RampConstant": [100, "00:00:50"] },
+        { "KeepConstant": [100, "00:00:50"] },
+        { "RampPerSec": [5, "00:00:05"] },
+        { "InjectPerSec": [5, "00:00:05"] }
       ]
 
     }],
@@ -86,7 +86,7 @@ Scenario.create "hello_world" [step1; step2; step3]
     ],
 
     "ReportFileName": "custom_report_name_from_json",
-    "ReportFormats": [ "Html", "Txt", "Csv" ]
+    "ReportFormats": [ "Html", "Txt", "Csv", "Md" ]
   }
 }
 ```
@@ -103,17 +103,17 @@ GlobalSettings:
     WarmUpDuration: '00:00:35'
 
     LoadSimulationsSettings:
-    - RampConcurrentScenarios:
-        CopiesCount: 5
+    - RampConstant:
+        Copies: 5
         During: '00:00:05'
-    - KeepConcurrentScenarios:
-        CopiesCount: 5
+    - KeepConstant:
+        Copies: 5
         During: '00:00:05'
-    - InjectScenariosPerSec:
-        CopiesCount: 5
+    - RampPerSec:
+        Rate: 5
         During: '00:00:05'
-    - RampScenariosPerSec:
-        CopiesCount: 5
+    - InjectPerSec:
+        Rate: 5
         During: '00:00:05'
 
     CustomSettings:
@@ -128,6 +128,7 @@ GlobalSettings:
   - Html
   - Txt
   - Csv
+  - Md
 ```
 </TabItem>
 
@@ -148,6 +149,11 @@ So far you have seen how you can configure NBomber API features via configuratio
    "CustomSettings": { "FiledA": "A"; "FieldB": "B" }
  }
  ```
+
+## Infrastracture configuration 
+
+## CLI arguments
+
 TBD
 
 <!--  
@@ -158,7 +164,7 @@ Our next step is to fetch custom config into our test. For this we have one entr
 
 ## Customizing connection pool
 
-## Infrastracture configuration 
+
 
 ## CLI arguments
 -->
