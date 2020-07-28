@@ -6,6 +6,20 @@ title: Configuration
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+This document will help you learn about configuring NBomber tests, especially it covers the topic of dynamic configuration via config files. NBomber separate configuration on two types:
+
+- Test configuration: defines all kinds of settings related only for tests. It could be settings for load simulation, settings to choose target scenarios to run, duration of the test, database connection strings, etc.
+```fsharp
+/// Loads test configuration.
+NBomberRunner.loadConfig "config.json"
+```
+
+- Infrastructure configuration: defines all kinds of settings related only to infrastructure. It could be settings for the logger, settings for some of the plugins, etc.
+```fsharp
+/// Loads infrastructure configuration.
+NBomberRunner.loadInfraConfig "infra-config.json"
+```
+
 ## Test configuration
 
 NBomber provides a way to configure your test via JSON or YAML configuration files. Instead of hardcoding some values you can put them in the config and then load it. Take a look first on the configuration via NBomber API (*F# or C#*) and then choose your favorite format (*JSON or YAML*).
@@ -60,10 +74,11 @@ Scenario.create "hello_world" [step1; step2; step3]
 
 <TabItem value="JSON">
 
-```json title="/config.json"
+```json title="config.json"
 {
   "TestSuite": "nbomber_tests",
   "TestName": "hello_world_test",
+
   "TargetScenarios": ["hello_world_scenario"],
 
   "GlobalSettings": {
@@ -85,7 +100,7 @@ Scenario.create "hello_world" [step1; step2; step3]
       { "PoolName": "web_socket_pool", "ConnectionCount": 5 }
     ],
 
-    "ReportFileName": "custom_report_name_from_json",
+    "ReportFileName": "custom_report_name",
     "ReportFormats": [ "Html", "Txt", "Csv", "Md" ]
   }
 }
@@ -94,9 +109,13 @@ Scenario.create "hello_world" [step1; step2; step3]
 
 <TabItem value="YAML">
 
-```yaml title="/config.yaml"
+```yaml title="config.yaml"
 TestSuite: nbomber tests
 TestName: test http
+
+TargetScenarios:
+  - hello_world_scenario
+
 GlobalSettings:
   ScenariosSettings:
   - ScenarioName: hello_world_scenario
@@ -123,7 +142,7 @@ GlobalSettings:
   - PoolName: test_pool
     ConnectionCount: 100
 
-  ReportFileName: custom_report_name_from_json
+  ReportFileName: custom_report_name
   ReportFormats:
   - Html
   - Txt
@@ -136,19 +155,73 @@ GlobalSettings:
 
 ### Injecting custom settings
 
-So far you have seen how you can configure NBomber API features via configuration files. But what if you want to extend your test by custom configuration settings. For example, you want to introduce SQL connection string to a database, and depending on the environment you want to pass different values.
+So far you have seen how you can configure NBomber tests via configuration files. But what if you want to extend your test by custom configuration settings. For example, you want to pass the SQL connection string for a database, and depending on the environment you want to pass different values.
 
 ```sql
 "server=127.0.0.1; uid=root; pwd=12345; database=test"
 ```
 
- For such cases, NBomber provides dedicated configuration settings called **Custom Settings** where are you can put any object structure:
+For such cases, NBomber provides dedicated configuration settings called **Custom Settings** where are you can put any object structure like this one:
  
- ```json
- {
-   "CustomSettings": { "FiledA": "A"; "FieldB": "B" }
- }
- ```
+```json title="config.json"
+{
+  "TestSuite": "nbomber_tests",
+  "TestName": "hello_world_test",
+
+  "TargetScenarios": ["hello_world_scenario"],
+
+  "GlobalSettings": {
+    "ScenariosSettings": [{
+
+      "ScenarioName": "hello_world_scenario",
+      "WarmUpDuration": "00:00:05",
+
+      "LoadSimulationsSettings": [
+        { "RampConstant": [100, "00:00:50"] },
+        { "KeepConstant": [100, "00:00:50"] },
+        { "RampPerSec": [5, "00:00:05"] },
+        { "InjectPerSec": [5, "00:00:05"] }
+      ],
+
+      "CustomSettings": {
+        "Server": "127.0.0.1",
+        "Uid": "root",
+        "Pwd": "12345",
+        "Database": "test"
+      }
+
+    }],
+
+    "ConnectionPoolSettings": [
+      { "PoolName": "web_socket_pool", "ConnectionCount": 5 }
+    ],
+
+    "ReportFileName": "custom_report_name",
+    "ReportFormats": [ "Html", "Txt", "Csv", "Md" ]
+  }
+}
+```
+
+And then fetch it into your test (make sure that your custom settings located within correlated scenario settings):
+
+```fsharp
+[<CLIMutable>]
+type SqlDbSettings = {
+    Server: string
+    Uid: string
+    Pwd: string
+    Database: string
+}
+
+let testInit = fun (context: ScenarioContext) -> task {    
+    let settings = context.CustomSettings.DeserializeJson<SqlDbSettings>()
+    //let settings = context.CustomSettings.DeserializeYaml<SqlDbSettings>() // in case of yaml
+    context.Logger.Information("test init received CustomSettings.TestField '{TestField}'", settings.TestField)
+}
+
+Scenario.create "hello_world_scenario" [step1; step2]
+|> Scenario.withTestInit(testInit)
+```
 
 ## Infrastracture configuration 
 

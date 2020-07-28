@@ -436,7 +436,7 @@ NBomberRunner.withTestName "analytical_queries"
 
 NBomberRunner.withTestName "analytical_queries"
 
-/// Loads configuration.
+/// Loads test configuration.
 /// The following formats are supported:
 /// - json (.json),
 /// - yaml (.yml, .yaml).
