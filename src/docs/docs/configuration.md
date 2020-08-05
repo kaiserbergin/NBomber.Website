@@ -8,13 +8,13 @@ import TabItem from '@theme/TabItem';
 
 This document will help you learn about configuring NBomber tests, especially it covers the topic of dynamic configuration via config files. NBomber separate configuration on two types:
 
-- Test configuration: defines all kinds of settings related only for tests. It could be settings for load simulation, settings to choose target scenarios to run, duration of the test, database connection strings, etc.
+- **Test configuration**: defines all kinds of settings related only for tests. It could be settings for load simulation, settings to choose target scenarios to run, duration of the test, database connection strings, etc.
 ```fsharp
 /// Loads test configuration.
 NBomberRunner.loadConfig "config.json"
 ```
 
-- Infrastructure configuration: defines all kinds of settings related only to infrastructure. It could be settings for the logger, settings for some of the plugins, etc.
+- **Infrastructure configuration**: defines all kinds of settings related only to infrastructure. It could be settings for the logger, plugins, etc.
 ```fsharp
 /// Loads infrastructure configuration.
 NBomberRunner.loadInfraConfig "infra-config.json"
@@ -163,7 +163,7 @@ So far you have seen how you can configure NBomber tests via configuration files
 
 For such cases, NBomber provides dedicated configuration settings called **Custom Settings** where are you can put any object structure like this one:
  
-```json title="config.json"
+```json {20} title="config.json"
 {
   "TestSuite": "nbomber_tests",
   "TestName": "hello_world_test",
@@ -202,7 +202,7 @@ For such cases, NBomber provides dedicated configuration settings called **Custo
 }
 ```
 
-And then fetch it into your test (make sure that your custom settings located within correlated scenario settings):
+And then fetch it into your test (make sure that your custom settings located within related scenario settings):
 
 ```fsharp
 [<CLIMutable>]

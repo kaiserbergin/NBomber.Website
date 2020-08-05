@@ -1,6 +1,8 @@
 ---
-id: realtime-metrics
-title: Realtime metrics
+id: reporting-sinks
+title: Reporting sinks
 ---
+
+- InfluxDb
 
 TBD

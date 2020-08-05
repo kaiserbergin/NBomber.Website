@@ -53,12 +53,15 @@ What is sink?
 Structured log events (messages) are written to sinks and each sink is responsible for writing it to its own backend, database, store etc.
 
 - [Console sink](https://github.com/serilog/serilog-sinks-console) is a mandatory sink which NBomber use to print out text on console. This sink can't be customized or overridden. Console sink prints only *Info* and *Warning* logs. 
-- [File sink](https://github.com/serilog/serilog-sinks-file) is default one but can be replaced or overridden by any third party [Serilog sink](https://github.com/serilog/serilog/wiki/Provided-Sinks). Also, File sink writes all types of logs (*Verbose, Debug, Info, Warning, Error, Fatal*), therefore if you decide to trace some request/response payload this sink is way to go.
+- [File sink](https://github.com/serilog/serilog-sinks-file) is a mandatory sink which NBomber use to write logs into file. This sink can't be customized or overridden. Also, File sink writes all types of logs (*Verbose, Debug, Info, Warning, Error, Fatal*), therefore if you decide to trace some request/response payload this sink is way to go.
 
 :::
 
 ```fsharp
-// writes to console only Info and Warning logs
+// by default NBomber sets MinimumLevel to Debug (you can override it)
+LoggerConfiguration().MinimumLevel.Debug()
+
+// Console sink settings: writes to console only Info and Warning logs
 LoggerConfiguration()
     .WriteTo.Console()
     .Filter.ByIncludingOnly(fun event -> 
@@ -66,25 +69,25 @@ LoggerConfiguration()
         || event.Level = LogEventLevel.Warning
     )
 
-// writes to file all types of logs
-LoggerConfiguration()    
-    .WriteTo.File(path = "./logs/nbomber-log.txt",                  
-                  outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",                  
-                  rollingInterval = RollingInterval.Day)
+// File sink settings: writes to file all types of logs
+LoggerConfiguration()      
+    .WriteTo.File(
+        path = "./logs/nbomber-log-" + testInfo.SessionId + ".txt",
+        outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] [{ThreadId}] {Message:lj}{NewLine}{Exception}",
+        rollingInterval = RollingInterval.Day
+    )
 ```
 
-You can also ovveride default logger configuration using [NBomberRunner](core-abstractions#nbomber-runner).
+You can enrich or customize default logger configuration using some other [sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks).
 
 :::important
 Make sure that you always return a new instance (not from a variable) of LoggerConfiguration. This limitation is mandatory since Serilog logger does not allow to create multiple instances from the same instance of LoggerConfiguration.  
 :::
 
 ```fsharp
+// here we set MinimumLevel to Verbose (it could be useful for tracing)
 NBomberRunner.withLoggerConfig(fun () ->
-    LoggerConfiguration()
-        .WriteTo.File(path = "./logs/nbomber-log.txt",                  
-                      outputTemplate = "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}",                  
-                      rollingInterval = RollingInterval.Day)
+    LoggerConfiguration().MinimumLevel.Verbose()
 )
 ```
 
@@ -95,7 +98,7 @@ Another way that is more appropriate for production use cases is configuring log
 /// The following formats are supported:
 /// - json (.json),
 /// - yaml (.yml, .yaml).
-NBomberRunner.loadInfraConfig "./infra_config.json"
+NBomberRunner.loadInfraConfig "infra-config.json"
 ```
 
 :::note
@@ -115,10 +118,11 @@ Here is an example of infrastructure config file.
 
 <TabItem value="JSON">
 
-```json title="./infra_config.json"
+```json title="infra-config.json"
 {
   "Serilog": {
     "Using":  ["Serilog.Sinks.File"],
+    "MinimumLevel": "Debug",
     "WriteTo": [{ 
       "Name": "File", 
       "Args": { 
@@ -134,10 +138,12 @@ Here is an example of infrastructure config file.
 
 <TabItem value="YAML">
 
-```yaml title="./infra_config.yaml"
+```yaml title="infra-config.yaml"
 Serilog:
   Using:
   - Serilog.Sinks.File  
+
+  MinimumLevel: Debug
 
   WriteTo:
   - Name: File
@@ -182,6 +188,7 @@ dotnet add package Serilog.Sinks.Elasticsearch
 ```fsharp
 |> NBomberRunner.withLoggerConfig(fun () ->    
     LoggerConfiguration()
+        .MinimumLevel.Debug()
         .WriteTo.Elasticsearch(nodeUris = "http://localhost:9200",
                                indexFormat = "custom-index-{0:yyyy.MM}",
                                batchPostingLimit = 0)
@@ -191,10 +198,11 @@ dotnet add package Serilog.Sinks.Elasticsearch
 
 <TabItem value="JSON">
 
-```json title="./infra_config.json"
+```json title="infra-config.json"
 {
   "Serilog": {
     "Using":  ["Serilog.Sinks.Elasticsearch"],
+    "MinimumLevel": "Debug",
     "WriteTo": [{ 
       "Name": "Elasticsearch", 
       "Args": { 
@@ -210,10 +218,12 @@ dotnet add package Serilog.Sinks.Elasticsearch
 
 <TabItem value="YAML">
 
-```yaml title="./infra_config.yaml"
+```yaml title="infra-config.yaml"
 Serilog:
   Using:
   - Serilog.Sinks.Elasticsearch  
+
+  MinimumLevel: Debug
 
   WriteTo:
   - Name: Elasticsearch
@@ -225,6 +235,6 @@ Serilog:
 </TabItem>
 </Tabs>
 
-For more information please use this [link](https://github.com/serilog/serilog-sinks-elasticsearch).
+For more information about Elasticsearch sink configuration, please use this [link](https://github.com/serilog/serilog-sinks-elasticsearch).
 
 <!-- TODO: gif animation -->

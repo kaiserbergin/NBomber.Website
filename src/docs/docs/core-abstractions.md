@@ -277,7 +277,7 @@ type IStepContext<'TConnection,'TFeedItem> =
     /// Feed item taken from attached feed    
     abstract FeedItem: 'TFeedItem
         
-    /// Step's logger        
+    /// NBomber's logger      
     abstract Logger: ILogger
     
     /// Returns response from previous step
@@ -295,7 +295,7 @@ type IStepContext<'TConnection,'TFeedItem> =
 
 ## Scenario
 
-Scenario is helping you to organize steps into sequential flow with different load simulations (concurrency control). 
+Scenario helps to organize steps into sequential flow with different load simulations (concurrency control). 
 
 ```fsharp
 Scenario.create "scenario" [step1; step2; step3; step4]
@@ -350,7 +350,7 @@ Scenario.withLoadSimulations [
 
 ### Scenario init
 
-Initialize scenario. You can use it to for example to prepare your target system.
+Initializes scenario. You can use it to for example to prepare your target system.
 
 ```fsharp
 Scenario.withInit(fun context -> task {
@@ -373,7 +373,7 @@ You can read more about configuration on this [page](./configuration)
 
 ### Scenario clean
 
-Cleaning scenario's resources.
+Cleans scenario's resources.
 
 ```fsharp
 Scenario.withClean(fun context -> task {
@@ -383,7 +383,7 @@ Scenario.withClean(fun context -> task {
 
 ### Scenario warm-up
 
-Use warm-up for warming up NBomber itself and target system.
+Use warm-up for warming up NBomber itself and target system. Warm-up will just simply start a scenario with a specified duration.
 
 ```fsharp
 Scenario.withWarmUpDuration(seconds 30)
@@ -414,7 +414,7 @@ type ScenarioContext = {
 
 ## NBomber runner
 
-Mainly NBomberRunner is responsible for registering and running scenarios under [Test Suite](https://en.wikipedia.org/wiki/Test_suite). Also it provides configuration points related to infrastracture, reporting, loading plugins.
+Mainly NBomberRunner is responsible for registering and running scenarios under [Test Suite](https://en.wikipedia.org/wiki/Test_suite). Also it provides configuration points related to infrastructure, reporting, loading plugins.
 
 ### NBomber runner API
 
@@ -426,12 +426,12 @@ NBomberRunner.registerScenario scenario
 /// Scenarios will be run in parallel.
 NBomberRunner.registerScenarios [scenario1; scenario2; scenario3]
 
-/// Sets test suite name
-/// Default value is: nbomber_default_test_suite_name
+/// Sets test suite name.
+/// Default value is: nbomber_default_test_suite_name.
 NBomberRunner.withTestSuite "mongo_db"        
 
-/// Sets test name
-/// Default value is: "nbomber_report_{current-date}"
+/// Sets test name.
+/// Default value is: "nbomber_report_{current-date}".
 NBomberRunner.withTestName "analytical_queries"
 
 NBomberRunner.withTestName "analytical_queries"
@@ -439,13 +439,13 @@ NBomberRunner.withTestName "analytical_queries"
 /// Loads test configuration.
 /// The following formats are supported:
 /// - json (.json),
-/// - yaml (.yml, .yaml).
+/// - yaml (.yml, .yaml)
 NBomberRunner.loadConfig "./config.json"
     
 /// Loads infrastructure configuration.
 /// The following formats are supported:
 /// - json (.json),
-/// - yaml (.yml, .yaml).
+/// - yaml (.yml, .yaml)
 NBomberRunner.loadInfraConfig "./infra-config.json"
 
 /// Sets logger configuration.
@@ -458,7 +458,8 @@ NBomberRunner.withLoggerConfig(fun () ->
     )
 )    
 
-/// Sets reporting sinks    
+/// Sets reporting sinks.    
+/// Reporting sink is used to save real-time metrics to correspond database.
 NBomberRunner.withReportingSinks([influxDbSink], sendStatsInterval = seconds 30)
 
 /// Sets plugins

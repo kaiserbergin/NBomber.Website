@@ -10,7 +10,7 @@ Welcome to NBomber! This tutorial will explore the basics of using NBomber and h
 
 ### Why we build NBomber and what you can do with it?
 
-1. The main reason behind NBomber is to provide a **lightweight** framework for writing load tests which you can use to test literally **any** system and simulate **any** production workload. 
+1. The main reason behind NBomber is to provide a **lightweight** framework for writing load tests which you can use to test literally **any** system and simulate **any** production workload. We wanted to provide only a few abstractions so that we could describe any type of load and still have a simple, intuitive API. 
 2. Another goal is to provide building blocks to validate your POC (proof of concept) projects by applying any complex load distribution.  
 3. With NBomber you can test any PULL or PUSH system (HTTP, WebSockets, GraphQl, gRPC, SQL Databse, MongoDb, Redis etc). 
 
@@ -19,7 +19,7 @@ NBomber as a modern framework provides:
 - Zero dependencies on semantic model (Pull/Push)
 - Very flexible configuration and dead simple API
 - [Cluster support](cluster-overview)
-- [Realtime metrics](realtime-metrics)
+- [Reporting sinks](reporting-sinks)
 - [CI/CD integration](test-automation#cicd-integration)
 - Plugins/extensions support
 - [Data feed support](core-abstractions#data-feed) 
@@ -66,7 +66,7 @@ Let's fist start with an empty hello world example to get more familiar with NBo
 }>
 <TabItem value="F#">
 
-```fsharp title="/Program.fs"
+```fsharp title="Program.fs"
 open System
 open System.Threading.Tasks
 open FSharp.Control.Tasks.V2.ContextInsensitive
@@ -107,7 +107,7 @@ let main argv =
 
 <TabItem value="C#">
 
-```csharp title="/Program.cs"
+```csharp title="Program.cs"
 using System;
 using System.Threading.Tasks;
 using NBomber.Contracts;
@@ -166,7 +166,7 @@ Now, let's add HTTP client to test a web server and then run it.
 }>
 <TabItem value="F#">
 
-```fsharp title="/Program.fs"
+```fsharp title="Program.fs"
 open System
 open System.Net.Http
 open FSharp.Control.Tasks.V2.ContextInsensitive
@@ -226,7 +226,7 @@ dotnet add package NBomber.Http
 }>
 <TabItem value="F#">
 
-```fsharp title="/Program.fs"
+```fsharp title="Program.fs"
 open System
 open System.Net.Http
 open FSharp.Control.Tasks.V2.ContextInsensitive
@@ -238,6 +238,7 @@ open NBomber.Plugins.Http.FSharp
 [<EntryPoint>]
 let main argv =
     
+    // it's optional Ping plugin that brings additional reporting data
     let pingConfig = PingPluginConfig.CreateDefault ["nbomber.com"]
     use pingPlugin = new PingPlugin(pingConfig)
     
@@ -251,6 +252,7 @@ let main argv =
         InjectPerSec(rate = 100, during = seconds 10)
     ]
     |> NBomberRunner.registerScenario
+    |> NBomberRunner.withPlugins [pingPlugin]
     |> NBomberRunner.run
     |> ignore
 
