@@ -12,7 +12,7 @@ This document will help you learn about NBomber.HTTP plugin in more detail.
 
 ## Overview
 
-The NBomber.Http provides a simple API to define HTTP steps, handle responses in an efficient way (without waiting on full response body but rathar first bytes), calculates response size, apply assertions.
+The NBomber.Http provides a simple API to define HTTP steps, handle responses in an efficient way (without waiting on full response body but rather first bytes), calculate response size, apply assertions.
 
 Add HTTP package
 
@@ -58,7 +58,7 @@ let main argv =
 
 ### Http headers
 
-By default NBomber is set with no headers.
+By default NBomber sets no headers.
 
 ```fsharp
 Http.withHeader "Accept" "application/json"
