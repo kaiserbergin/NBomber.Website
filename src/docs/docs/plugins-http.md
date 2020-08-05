@@ -77,10 +77,8 @@ By default, NBomber is using this check for every response but you can override 
 
 ```fsharp
 Http.withCheck(fun response -> task {
-    if response.IsSuccessStatusCode then
-        return Response.Ok() 
-    else
-        return Response.Fail("status code: " + response.StatusCode.ToString())
+    return if response.IsSuccessStatusCode then Response.Ok() 
+           else Response.Fail("status code: " + response.StatusCode.ToString())
 })
 ```
 

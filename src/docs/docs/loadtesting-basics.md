@@ -48,6 +48,21 @@ When it comes to load simulation, systems behave in 2 different ways:
 - Closed systems, where you keep a constant number of concurrent clients and **they waiting on a response before sending a new request**. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients. Usually, in real-world scenarios systems with persisted connections (RabbitMq, Kafka, WebSockets, Databases) are tested as closed systems.
 - Open systems, where you keep arrival rate of new clients requests **without waitng on responses**. The good example could be some popular website like Amazon. Under the load new clients arrive even though applications have trouble serving them. Usually, in real-world scenarios systems that use stateless protocols like HTTP are tested as open systems.
 
+:::note
+NBomber allows you to configure load simulation, you can read more [here](core-abstractions#load-simulations).
+:::
+
+### When I need to use smooth ramp-up simulation?
+
+Many folks do believe that they need to start testing using a smooth ramp-up. Usually, depending on the duration of ramp-up it's hard to get correct figures like RPS, latency, etc since your system is not fully loaded during the actual test. **In fact, better to always start with a max load to fully load your system and get correct figures**.
+
+## How long to run load test?
+
+To start, we recommend you start with small *unit load tests*. These are designed to run on each commit for specific API endpoints and may take only 3-5 minutes each. But there could be some side effects (GC pause, memory leak, networking problems, etc) which you can catch only running tests for a long period.
+Therefore, you should have a nightly load test that will run at night for 30 minutes (or longer) per endpoint. The main goal of nightly running tests is to bring confidence that your system works stable despite any long period of time.
+
+
+
 <!-- 
 ## Load simulations
 
