@@ -73,7 +73,7 @@ Http.withBody(new ByteArrayContent(bytes))
 
 ### Http check response
 
-By default, NBomber is using this check for all response but you can override it per step.
+By default, NBomber is using this check for every response but you can override it per step.
 
 ```fsharp
 Http.withCheck(fun response -> task {
@@ -114,10 +114,9 @@ let updateUser = HttpStep.create("update user", fun context ->
     let user = context.GetPreviousStepResponse<User>()
     
     let json = { user with Age = user.Age + 1 } 
-            |> JsonConvert.SerializeObject
-    
-    let url = "https://test-api.com/api/v1/users"
-    Http.createRequest "PUT" url
+               |> JsonConvert.SerializeObject
+        
+    Http.createRequest "PUT" "https://test-api.com/api/v1/users"
     |> Http.withHeader "Accept" "application/json"
     |> Http.withBody(new StringContent(json))
 )
