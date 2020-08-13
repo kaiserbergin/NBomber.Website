@@ -28,10 +28,8 @@ NBomber provides a way to configure your test via JSON or YAML configuration fil
   groupId="config"
   defaultValue="F#"
   values={[
-    {label: 'F#', value: 'F#'},
-    {label: 'C#', value: 'C#'},
-    {label: 'JSON', value: 'JSON'},
-    {label: 'YAML', value: 'YAML'},
+    {label: 'F#', value: 'F#'},    
+    {label: 'JSON', value: 'JSON'}    
   ]
 }>
 
@@ -61,15 +59,11 @@ Scenario.create "hello_world" [step1; step2; step3]
 |> NBomberRunner.withReportFileName "my_report"
 |> NBomberRunner.withReportFormats [ReportFormat.Txt; ReportFormat.Csv; ReportFormat.Html; ReportFormat.Md]
 |> NBomberRunner.withoutReports
-|> NBomberRunner.withReportingSinks [influxDbSink; prometheusSink]    
-    
+|> NBomberRunner.withReportingSinks [influxDbSink; prometheusSink] (seconds 30)   
+
 |> NBomberRunner.loadConfig "config.json"            // or config.yaml    
 |> NBomberRunner.loadInfraConfig "infra_config.json" // or infra_config.yaml
 ```
-</TabItem>
-
-<TabItem value="C#">
-
 </TabItem>
 
 <TabItem value="JSON">
@@ -106,51 +100,6 @@ Scenario.create "hello_world" [step1; step2; step3]
 }
 ```
 </TabItem>
-
-<TabItem value="YAML">
-
-```yaml title="config.yaml"
-TestSuite: nbomber tests
-TestName: test http
-
-TargetScenarios:
-  - hello_world_scenario
-
-GlobalSettings:
-  ScenariosSettings:
-  - ScenarioName: hello_world_scenario
-    WarmUpDuration: '00:00:35'
-
-    LoadSimulationsSettings:
-    - RampConstant:
-        Copies: 5
-        During: '00:00:05'
-    - KeepConstant:
-        Copies: 5
-        During: '00:00:05'
-    - RampPerSec:
-        Rate: 5
-        During: '00:00:05'
-    - InjectPerSec:
-        Rate: 5
-        During: '00:00:05'
-
-    CustomSettings:
-      TestField: 1
-
-  ConnectionPoolSettings:
-  - PoolName: test_pool
-    ConnectionCount: 100
-
-  ReportFileName: custom_report_name
-  ReportFormats:
-  - Html
-  - Txt
-  - Csv
-  - Md
-```
-</TabItem>
-
 </Tabs>
 
 ### Injecting custom settings
@@ -163,7 +112,7 @@ So far you have seen how you can configure NBomber tests via configuration files
 
 For such cases, NBomber provides dedicated configuration settings called **Custom Settings** where are you can put any object structure like this one:
  
-```json {20} title="config.json"
+```json {24} title="config.json"
 {
   "TestSuite": "nbomber_tests",
   "TestName": "hello_world_test",
@@ -183,18 +132,18 @@ For such cases, NBomber provides dedicated configuration settings called **Custo
         { "InjectPerSec": [5, "00:00:05"] }
       ],
 
+      "ConnectionPoolSettings": [
+        { "PoolName": "web_socket_pool", "ConnectionCount": 5 }
+      ]
+
       "CustomSettings": {
         "Server": "127.0.0.1",
         "Uid": "root",
         "Pwd": "12345",
         "Database": "test"
-      }
+      },      
 
-    }],
-
-    "ConnectionPoolSettings": [
-      { "PoolName": "web_socket_pool", "ConnectionCount": 5 }
-    ],
+    }],    
 
     "ReportFileName": "custom_report_name",
     "ReportFormats": [ "Html", "Txt", "Csv", "Md" ]
@@ -214,8 +163,7 @@ type SqlDbSettings = {
 }
 
 let testInit = fun (context: ScenarioContext) -> task {    
-    let settings = context.CustomSettings.DeserializeJson<SqlDbSettings>()
-    //let settings = context.CustomSettings.DeserializeYaml<SqlDbSettings>() // in case of yaml
+    let settings = context.CustomSettings.Get<SqlDbSettings>()    
     context.Logger.Information("test init received CustomSettings.TestField '{TestField}'", settings.TestField)
 }
 
@@ -224,6 +172,8 @@ Scenario.create "hello_world_scenario" [step1; step2]
 ```
 
 ## Infrastracture configuration 
+
+TBD
 
 ## CLI arguments
 

@@ -52,16 +52,16 @@ type IStepContext<'TConnection,'TFeedItem> =
 ```fsharp
 type Scenario = {
     ScenarioName: string
-    Init: (ScenarioContext -> Task) option
-    Clean: (ScenarioContext -> Task) option
+    Init: (IScenarioContext -> Task) option
+    Clean: (IScenarioContext -> Task) option
     Steps: IStep list
     WarmUpDuration: TimeSpan
     LoadSimulations: LoadSimulation list
 }
 
-type ScenarioContext = {
+type IScenarioContext = {
     NodeInfo: NodeInfo
-    CustomSettings: string
+    CustomSettings: IConfiguration
     CancellationToken: CancellationToken
     Logger: ILogger
 }
@@ -118,6 +118,7 @@ type StepStats = {
     Percent50: int
     Percent75: int
     Percent95: int
+    Percent99: int
     StdDev: int
     MinDataKb: float
     MeanDataKb: float
@@ -131,6 +132,11 @@ type LatencyCount = {
     More1200: int
 }
 
+type LoadSimulationStats = {
+    SimulationName: string
+    Value: int
+}
+
 type ScenarioStats = {
     ScenarioName: string
     RequestCount: int
@@ -139,6 +145,7 @@ type ScenarioStats = {
     AllDataMB: float
     StepStats: StepStats[]
     LatencyCount: LatencyCount
+    LoadSimulationStats: LoadSimulationStats
     Duration: TimeSpan
 }
 

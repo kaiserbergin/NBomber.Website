@@ -96,8 +96,7 @@ Another way that is more appropriate for production use cases is configuring log
 ```fsharp
 /// Loads infrastructure configuration.
 /// The following formats are supported:
-/// - json (.json),
-/// - yaml (.yml, .yaml).
+/// - json (.json)
 NBomberRunner.loadInfraConfig "infra-config.json"
 ```
 
@@ -106,17 +105,6 @@ You can also use [NBomber CLI](configuration#cli-arguments) to dynamically speci
 :::
 
 Here is an example of infrastructure config file.
-
-<Tabs
-  groupId="config"
-  defaultValue="JSON"
-  values={[    
-    {label: 'JSON', value: 'JSON'},
-    {label: 'YAML', value: 'YAML'},
-  ]
-}>
-
-<TabItem value="JSON">
 
 ```json title="infra-config.json"
 {
@@ -134,26 +122,6 @@ Here is an example of infrastructure config file.
   }
 }
 ```
-</TabItem>
-
-<TabItem value="YAML">
-
-```yaml title="infra-config.yaml"
-Serilog:
-  Using:
-  - Serilog.Sinks.File  
-
-  MinimumLevel: Debug
-
-  WriteTo:
-  - Name: File
-    Args:
-      path: "./logs/nbomber-log.txt"
-      outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss.fff zzz} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
-      rollingInterval: "Day"
-```
-</TabItem>
-</Tabs>
 
 ## Elasticsearch integration
 
@@ -178,8 +146,7 @@ dotnet add package Serilog.Sinks.Elasticsearch
   defaultValue="F#"
   values={[
     {label: 'F#', value: 'F#'},    
-    {label: 'JSON', value: 'JSON'},
-    {label: 'YAML', value: 'YAML'},
+    {label: 'JSON', value: 'JSON'}    
   ]
 }>
 
@@ -188,7 +155,7 @@ dotnet add package Serilog.Sinks.Elasticsearch
 ```fsharp
 |> NBomberRunner.withLoggerConfig(fun () ->    
     LoggerConfiguration()
-        .MinimumLevel.Debug()
+        .MinimumLevel.Information()
         .WriteTo.Elasticsearch(nodeUris = "http://localhost:9200",
                                indexFormat = "custom-index-{0:yyyy.MM}",
                                batchPostingLimit = 0)
@@ -202,7 +169,7 @@ dotnet add package Serilog.Sinks.Elasticsearch
 {
   "Serilog": {
     "Using":  ["Serilog.Sinks.Elasticsearch"],
-    "MinimumLevel": "Debug",
+    "MinimumLevel": "Information",
     "WriteTo": [{ 
       "Name": "Elasticsearch", 
       "Args": { 
@@ -213,24 +180,6 @@ dotnet add package Serilog.Sinks.Elasticsearch
     }]
   }
 }
-```
-</TabItem>
-
-<TabItem value="YAML">
-
-```yaml title="infra-config.yaml"
-Serilog:
-  Using:
-  - Serilog.Sinks.Elasticsearch  
-
-  MinimumLevel: Debug
-
-  WriteTo:
-  - Name: Elasticsearch
-    Args:
-      nodeUris: "http://localhost:9200"
-      indexFormat: "custom-index-{0:yyyy.MM}"
-      batchPostingLimit: 0
 ```
 </TabItem>
 </Tabs>

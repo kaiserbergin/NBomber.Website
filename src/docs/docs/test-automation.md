@@ -24,6 +24,7 @@ stats.RPS = 1_000           // request per second count
 stats.Percent50 < 50        // 50% of response latency
 stats.Percent75 < 100       // 75% of response latency
 stats.Percent95 < 100       // 95% of response latency
+stats.Percent99 < 100       // 99% of response latency
 stats.MinDataKb < 50.0      // min item size that transferred during scenario
 stats.MeanDataKb < 50.0     // mean item size that transferred during scenario
 stats.MaxDataKb < 50.0      // max item size item that transferred during scenario

@@ -32,17 +32,17 @@ Step and Scenario play the most important role in building real-world simulation
 // Step is a basic element which will be executed and measured
 type Step = {
     StepName: string    
-    Execute: StepContext -> Task<Response>
+    Execute: IStepContext -> Task<Response>
     ConnectionPool: ConnectionPool
-    Feed: Feed
+    Feed: IFeed
 }
 
 // Scenario is a container for steps and load simulations
 type Scenario = {
     ScenarioName: string
     Steps: Step list     
-    Init: (ScenarioContext -> Task) option 
-    Clean: (ScenarioContext -> Task) option
+    Init: (IScenarioContext -> Task) option 
+    Clean: (IScenarioContext -> Task) option
     WarmUpDuration: TimeSpan
     LoadSimulations: LoadSimulation list
 }
@@ -362,14 +362,11 @@ Another popular use case is to parse your custom settings.
 
 ```fsharp
 Scenario.withInit(fun context -> task {
-    let mySettings = context.CustomSettings.DeserializeJson<MySettings>()
-    
-    // in case of YAML
-    // let mySettings = context.CustomSettings.DeserializeYaml<MySettings>()    
+    let mySettings = context.CustomSettings.Get<MySettings>()    
 })
 ```
 
-You can read more about configuration on this [page](./configuration)
+You can read more about configuration on this [page](configuration)
 
 ### Scenario clean
 
@@ -395,21 +392,18 @@ Scenario.withoutWarmUp
 Scenario context is available on init and clean phase.
 
 ```fsharp
-type ScenarioContext = {
+type IScenarioContext =
     /// Gets current node info
-    NodeInfo: NodeInfo    
-    /// Gets client settings content from configuration file    
-    CustomSettings: string
-
-    /// Cancellation token is a standard mechanics
+    abstract NodeInfo: NodeInfo
+    /// Gets client settings content from configuration file
+    abstract CustomSettings: IConfiguration
+    /// Cancellation token is a standard mechanics 
     /// for canceling long-running operations.
     /// Cancellation token should be used to help NBomber stop 
-    /// scenarios when the test is finished        
-    CancellationToken: CancellationToken
-
-    /// Scenario's logger
-    Logger: ILogger
-}
+    /// scenarios when the test is finished
+    abstract CancellationToken: CancellationToken
+    /// NBomber's logger
+    abstract Logger: ILogger
 ```
 
 ## NBomber runner
@@ -438,15 +432,13 @@ NBomberRunner.withTestName "analytical_queries"
 
 /// Loads test configuration.
 /// The following formats are supported:
-/// - json (.json),
-/// - yaml (.yml, .yaml)
-NBomberRunner.loadConfig "./config.json"
+/// - json (.json)
+NBomberRunner.loadConfig "config.json"
     
 /// Loads infrastructure configuration.
 /// The following formats are supported:
-/// - json (.json),
-/// - yaml (.yml, .yaml)
-NBomberRunner.loadInfraConfig "./infra-config.json"
+/// - json (.json)
+NBomberRunner.loadInfraConfig "infra-config.json"
 
 /// Sets logger configuration.
 /// Make sure that you always return a new instance of LoggerConfiguration.
@@ -454,13 +446,14 @@ NBomberRunner.loadInfraConfig "./infra-config.json"
 /// For this use NBomberRunner.loadInfraConfig
 NBomberRunner.withLoggerConfig(fun () -> 
     LoggerConfiguration().WriteTo.Elasticsearch(
-        ElasticsearchSinkOptions(Uri "http://localhost:9200")
+        ElasticsearchSinkOptions("http://localhost:9200")
     )
 )    
 
 /// Sets reporting sinks.    
 /// Reporting sink is used to save real-time metrics to correspond database.
-NBomberRunner.withReportingSinks([influxDbSink], sendStatsInterval = seconds 30)
+/// (reportingSinks: IReportingSink list) (sendStatsInterval: TimeSpan)
+NBomberRunner.withReportingSinks [influxDbSink] (seconds 30)
 
 /// Sets plugins
 NBomberRunner.withPlugins [pingPlugin]
@@ -482,7 +475,7 @@ NBomberRunner.run
 /// Examples of possible args:
 /// [|"-c"; "config.yaml"; "-i"; "infra_config.yaml"|]
 /// [|"--config"; "config.yaml"; "--infra"; "infra_config.yaml"|]
-NBomberRunner.runWithArgs ["-c"; "./config.json"; "-i"; "./infra-config.json"]
+NBomberRunner.runWithArgs ["-c"; "config.json"; "-i"; "infra-config.json"]
 ```
 
 ## Data feed
@@ -497,8 +490,8 @@ Data feed helps you to inject dynamic data into your test. It could be very valu
 ////////////////////////////////////
 
 let data = [1; 2; 3; 4; 5] |> FeedData.fromSeq |> FeedData.shuffleData
-let data = FeedData.fromJson<User>("users_feed_data.json")
-let data = FeedData.fromCsv<User>("users_feed_data.csv")
+//let data = FeedData.fromJson<User> "users_feed_data.json"
+//let data = FeedData.fromCsv<User> "users_feed_data.csv"
 
 ////////////////////////////////////
 // second, we create Feed
@@ -509,17 +502,21 @@ let data = FeedData.fromCsv<User>("users_feed_data.csv")
 let feed = Feed.createConstant "numbers" data
 
 // creates Feed that randomly picks an item per Step invocation.
-let feed = Feed.createRandom "numbers" data
+//let feed = Feed.createRandom "numbers" data
 
 // creates Feed that returns values from  value on every Step invocation.
-let feed = Feed.createCircular "numbers" data
+//let feed = Feed.createCircular "numbers" data
+
+let userFeed = FeedData.fromCsv<User> "users_feed_data.csv"
+               |> FeedData.shuffleData
+               |> Feed.createRandom "users"
 
 ////////////////////////////////////
 // third, we attach feed to the step
 ////////////////////////////////////
 let step = Step.create("simple step", feed, fun context -> task {
 
-    context.Logger.Information("Data from feed: {FeedItem}", context.FeedItem)    
+    context.Logger.Debug("Data from feed: {FeedItem}", context.FeedItem)    
     
     return Response.Ok()
 })

@@ -59,7 +59,7 @@ This plugin is allowing dynamic configuration via the infrastructure config file
 ```json title="infra-config.json"
 {
     "PingPlugin": {
-        "Hosts": ["jsonplaceholder.typicode.com"],
+        "Hosts": ["nbomber.com"],
         "BufferSizeBytes": 32,
         "Ttl": 128,
         "DontFragment": false,

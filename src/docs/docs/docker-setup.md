@@ -26,29 +26,32 @@ version: '3.4'
 services:
   
   influxdb:
-    image: "influxdb:1.5.4"
+    image: "influxdb:1.8.1"
     environment:
       INFLUXDB_DB: "\"default\""
     ports:
       - "8086:8086"
 
   grafana:
-    image: "grafana/grafana:6.5.2"
+    image: "grafana/grafana:7.1.3"
     environment:
       - "GF_SERVER_ROOT_URL=http://grafana:6082"
     ports:
       - "3000:3000"
     depends_on:
-      - "influxdb"  
-
+      - "influxdb"
+      
   elasticsearch:
-    image: "elasticsearch:6.8.6"
+    image: "elasticsearch:7.8.1"
+    environment:
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - "discovery.type=single-node"
     ports:
       - "9200:9200"
       - "9300:9300"
 
   kibana:
-    image: "kibana:6.8.6"
+    image: "kibana:7.8.1"
     ports:
       - "5601:5601"
 ```
