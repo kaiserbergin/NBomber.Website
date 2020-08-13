@@ -31,6 +31,11 @@ module.exports = {
           activeBasePath: 'changelog',
           label: 'Changelog',
           position: 'left'
+        }, 
+        {
+          href: 'https://github.com/PragmaticFlow/NBomber/tree/dev/examples',
+          label: 'Examples',
+          position: 'left'
         },        
         // {to: 'blog', label: 'Blog', position: 'left'},
         // {

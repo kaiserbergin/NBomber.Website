@@ -23,7 +23,7 @@ __step__|__details__
 name|`pull html`
 request count|all = `1491`, ok = `1491`, failed = `0`
 latency|RPS = `105`, min = `50`, mean = `1084`, max = `5762`
-latency percentile|50% = `752`, 75% = `1048`, 95% = `3731`, StdDev = `999`
+latency percentile|50% = `752`, 75% = `1048`, 95% = `3731`, 99% = `3901`, StdDev = `999`
 data transfer|min = `17.880 Kb`, mean = `17.880 Kb`, max = `17.880 Kb`, all = `26.030 MB`
 
 > **Ping statistics table**

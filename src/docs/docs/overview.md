@@ -19,9 +19,9 @@ NBomber as a modern framework provides:
 - Zero dependencies on semantic model (Pull/Push)
 - Very flexible configuration and dead simple API
 - [Cluster support](cluster-overview)
-- [Reporting sinks](reporting-sinks)
+- [Realtime Reporting](reporting-sinks)
+- [Plugins support](plugins-overview)
 - [CI/CD integration](test-automation#cicd-integration)
-- Plugins/extensions support
 - [Data feed support](core-abstractions#data-feed) 
 
 ## Step by step introduction
@@ -206,8 +206,8 @@ let main argv =
 ### Create production-ready HTTP load test
 
 Now, you got a basic understanding of NBomber and ready to move on. This time we will use:
-- [NBomber.HTTP](https://github.com/PragmaticFlow/NBomber.Http) plugin to simplify defining and handling of HTTP
-- NBomber.PingPlugin to add additional reporting 
+- [NBomber.HTTP](plugins-http) plugin to simplify defining and handling of HTTP
+- [NBomber.PingPlugin](plugins-ping) to add additional reporting 
 - Specify load simulation
 
 So, we only need to install missed NBomber.Http package (*NBomber.PingPlugin is included as part of NBomber, we don't need to install it*).
@@ -268,6 +268,10 @@ let main argv =
 ## Congratulations! You have done it!
 
 Finally, you reach this point! Here you can find additional information which helps you in building real world NBomber tests:
+
+- [Learn core abstarctions](core-abstractions)
+- [Loadtesting basics](loadtesting-basics)
+- [Examples](https://github.com/PragmaticFlow/NBomber/tree/dev/examples)
 
 <!-- - [View and analyze reports](./analyze-reports)
 - [Add dynamic configuration](./configuration)
