@@ -1,6 +1,12 @@
 ---
 id: sinks-influxdb
-title: InfluxDb sink
+title: InfluxDB sink
 ---
+
+## Overview
+
+## API
+
+## Docker setup
 
 TBD

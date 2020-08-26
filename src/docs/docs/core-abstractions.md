@@ -455,8 +455,9 @@ NBomberRunner.withLoggerConfig(fun () ->
 /// (reportingSinks: IReportingSink list) (sendStatsInterval: TimeSpan)
 NBomberRunner.withReportingSinks [influxDbSink] (seconds 30)
 
-/// Sets plugins
-NBomberRunner.withPlugins [pingPlugin]
+/// Sets worker plugins.
+/// Worker plugin is a plugin that starts at the test start and works as a background worker.
+NBomberRunner.withWorkerPlugins [pingPlugin]
 
 /// Sets application type.
 /// The following application types are supported:

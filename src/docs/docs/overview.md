@@ -252,7 +252,7 @@ let main argv =
         InjectPerSec(rate = 100, during = seconds 10)
     ]
     |> NBomberRunner.registerScenario
-    |> NBomberRunner.withPlugins [pingPlugin]
+    |> NBomberRunner.withWorkerPlugins [pingPlugin]
     |> NBomberRunner.run
     |> ignore
 

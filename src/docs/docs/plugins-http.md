@@ -59,7 +59,7 @@ let main argv =
     Scenario.create "nbomber_web_site" [step]     
     |> Scenario.withLoadSimulations [InjectPerSec(rate = 100, during = seconds 30)]
     |> NBomberRunner.registerScenario
-    |> NBomberRunner.withPlugins [pingPlugin]
+    |> NBomberRunner.withWorkerPlugins [pingPlugin]
     |> NBomberRunner.run
     |> ignore
 
@@ -98,7 +98,7 @@ namespace CSharp
 
             NBomberRunner
                 .RegisterScenarios(scenario)
-                .WithPlugins(pingPlugin)                
+                .WithWorkerPlugins(pingPlugin)                
                 .Run();
         }
     }
@@ -207,7 +207,7 @@ Scenario.create "rest_api" [getUser; getPosts]
 |> Scenario.withWarmUpDuration(seconds 5)
 |> Scenario.withLoadSimulations [InjectPerSec(rate = 100, during = seconds 30)]
 |> NBomberRunner.registerScenario
-|> NBomberRunner.withPlugins [pingPlugin]
+|> NBomberRunner.withWorkerPlugins [pingPlugin]
 |> NBomberRunner.withTestSuite "http"
 |> NBomberRunner.withTestName "advanced_test"
 |> NBomberRunner.run
@@ -274,7 +274,7 @@ var pingPlugin = new PingPlugin(pingPluginConfig);
 
 NBomberRunner
     .RegisterScenarios(scenario)
-    .WithPlugins(pingPlugin)
+    .WithWorkerPlugins(pingPlugin)
     .WithTestSuite("http")
     .WithTestName("advanced_test")
     .Run();

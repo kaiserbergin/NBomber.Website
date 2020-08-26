@@ -17,7 +17,7 @@ use pingPlugin = new PingPlugin(pingPluginConfig)
 
 Scenario.create "rest_api" [getUser; getPosts]
 |> NBomberRunner.registerScenario
-|> NBomberRunner.withPlugins [pingPlugin]
+|> NBomberRunner.withWorkerPlugins [pingPlugin]
 |> NBomberRunner.run
 ```
 
@@ -71,7 +71,7 @@ This plugin is allowing dynamic configuration via the infrastructure config file
 ```fsharp
 Scenario.create "rest_api" [getUser; getPosts]
 |> NBomberRunner.registerScenario
-|> NBomberRunner.withPlugins [new PingPlugin()] // we set empty instance
+|> NBomberRunner.withWorkerPlugins [new PingPlugin()] // we set empty instance
 |> NBomberRunner.loadInfraConfig "infra-config.json"
 |> NBomberRunner.run
 ```

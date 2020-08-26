@@ -22,16 +22,16 @@ NBomber provides a concept of plugins that you can use to extend the functionali
 ## Plugins development
 
 In fact, plugins are divided into 2 types:
- - DSL Plugin is a plugin that extends NBomber's interface to interact with a specific protocol, system, database, etc. A good example is the Http plugin. There is no specialized API for this type of plugins in NBomber, in fact, these plugins use native clients/drivers and wrap them in basic NBomber elements, for example, Step.
+ - DSL (Domain-specific language) plugin is a plugin that extends NBomber's API to interact with a specific protocol, system, database, etc. A good example is the Http or Redis plugin. There is no specialized API for this type of plugins in NBomber, in fact, these plugins use native clients/drivers and wrap them in basic NBomber elements (for example, Step, ConnectionPool) that extends NBomber API.
 
- - Plugin worker is a plugin that starts at the test start and works as a background worker. Often, such a plugin can perform additional operations on incoming traffic, infrastructure, etc. A good example would be the Ping networking plugin, which at startup tests the specified web host and at the end of the test provides the latency results in the form of metrics. For this type of plugins, NBomber provides the IPlugin interface:
+ - Worker plugin is a plugin that starts at the test start and works as a background worker. Often, such a plugin can perform additional operations on incoming traffic, infrastructure, etc. A good example would be the Ping networking plugin, which at startup tests the specified web host and at the end of the test provides the latency results in the form of metrics. For this type of plugins, NBomber provides this interface:
 
 ```fsharp
-type IPlugin =
+type IWorkerPlugin =
     inherit IDisposable
     abstract PluginName: string
     abstract Init: logger:ILogger * infraConfig:IConfiguration option -> unit
-    abstract StartTest: testInfo:TestInfo -> Task
+    abstract Start: testInfo:TestInfo -> Task
     abstract GetStats: unit -> DataSet
-    abstract StopTest: unit -> Task
+    abstract Stop: unit -> Task
 ```
