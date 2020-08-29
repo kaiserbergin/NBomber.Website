@@ -109,6 +109,45 @@ namespace CSharp
 
 ## API
 
+### Http step
+
+The main thing that this plugin adds is a convenient way to define the NBomber [step](core-abstractions#step) that creates a Http request and then send it.
+
+```fsharp
+HttpStep.create (name: string,
+                 feed: IFeed<'TFeedItem>,
+                 createRequest: IStepContext<unit,'TFeedItem> -> Task<HttpRequest>,
+                 completionOption: HttpCompletionOption) =
+```
+
+By default NBomber.Http is set completionOption = HttpCompletionOption.ResponseHeadersRead for performance optimizations. You can read about this optimization [here.](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpcompletionoption)
+
+```fsharp
+// creates simple HTTP step
+let step =
+    HttpStep.create("step", fun context ->
+        Http.createRequest "GET" "https://gitter.im"
+        |> Http.withHeader "Accept" "text/html"
+    )
+
+// creates two steps that run sequentially
+let step1 =
+    HttpStep.create("step 1", fun context ->
+        Http.createRequest "GET" "https://gitter.im"
+        |> Http.withHeader "Accept" "text/html"
+    )
+
+let step2 =
+    HttpStep.create("step 2", fun context -> task {
+        let step1Response = context.GetPreviousStepResponse<HttpResponseMessage>()
+        let headers = step1Response.Headers
+        let! body = step1Response.Content.ReadAsStringAsync()
+
+        return Http.createRequest "POST" "asdsad"
+               |> Http.withHeader "Accept" "text/html"
+    })
+```
+
 ### Http headers
 
 By default NBomber sets no headers.
