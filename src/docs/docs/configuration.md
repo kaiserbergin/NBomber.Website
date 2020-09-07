@@ -6,9 +6,9 @@ title: Configuration
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This document will help you learn about configuring NBomber tests, especially it covers the topic of dynamic configuration via config files. NBomber separate configuration on two types:
+This document will help you learn about configuring NBomber tests. It will cover the topic of dynamic configuration via config files. NBomber separate configuration on two types:
 
-- **Test configuration**: defines all kinds of settings related only for tests. It could be settings for load simulation, settings to choose target scenarios to run, duration of the test, database connection strings, etc.
+- **Test configuration**: defines all kinds of settings related only to tests. It could be settings for load simulation, settings to choose target scenarios to run, duration of the test, database connection strings, etc.
 ```fsharp
 /// Loads test configuration.
 NBomberRunner.loadConfig "config.json"
@@ -22,7 +22,7 @@ NBomberRunner.loadInfraConfig "infra-config.json"
 
 ## Test configuration
 
-NBomber provides a way to configure your test via JSON or YAML configuration files. Instead of hardcoding some values you can put them in the config and then load it. Take a look first on the configuration via NBomber API (*F# or C#*) and then choose your favorite format (*JSON or YAML*).
+NBomber provides a way to configure your test via JSON configuration files. Instead of hardcoding some values you can put them in the config and then load it. Take a look at the configuration via NBomber API (*F# or C#*) and then check (*JSON*).
 
 <Tabs
   groupId="config"
@@ -110,7 +110,7 @@ So far you have seen how you can configure NBomber tests via configuration files
 "server=127.0.0.1; uid=root; pwd=12345; database=test"
 ```
 
-For such cases, NBomber provides dedicated configuration settings called **Custom Settings** where are you can put any object structure like this one:
+For such cases, NBomber provides dedicated configuration settings called **Custom Settings** where you can put any object structure like this one:
  
 ```json {24} title="config.json"
 {
@@ -151,7 +151,7 @@ For such cases, NBomber provides dedicated configuration settings called **Custo
 }
 ```
 
-And then fetch it into your test (make sure that your custom settings located within related scenario settings):
+And then fetch it to your test (make sure that your custom settings located within related scenario settings):
 
 ```fsharp
 [<CLIMutable>]
@@ -180,7 +180,7 @@ TBD
 TBD
 
 <!--  
-and NBomber will inject it into the test runtime. Let's pretend that we need to inject SQL connection string, into our scenario:
+and NBomber will inject it into the test runtime. Let's imagine that we need to inject SQL connection string into our scenario:
 
 Our next step is to fetch custom config into our test. For this we have one entry point: Scenario Init
 

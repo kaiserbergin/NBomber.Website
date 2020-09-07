@@ -111,7 +111,7 @@ namespace CSharp
 
 ### Http step
 
-The main thing that this plugin adds is a convenient way to define the NBomber [step](core-abstractions#step) that creates a Http request and then send it.
+The main thing that this plugin adds is a convenient way to define the NBomber [step](core-abstractions#step) that creates a Http request and then sends it.
 
 ```fsharp
 HttpStep.create (name: string,
@@ -165,7 +165,7 @@ Http.withBody(new ByteArrayContent(bytes))
 
 ### Http check response
 
-By default, NBomber is using this check for every response but you can override it per step.
+By default, NBomber is using this check for every response but you can override it for every step.
 
 ```fsharp
 Http.withCheck(fun response -> task {
@@ -323,7 +323,7 @@ NBomberRunner
 
 ## Advanced logging (tracing)
 
-There may be situations when you need to trace your requests and responses. The NBomber.Http has built-in this functionality for tracing every request/response. In order to start tracing you need to switch minimum logging level to verbose.
+There may be situations when you need to trace your requests and responses. The NBomber.Http has built-in functionality for tracing every request/response. In order to start tracing you need to set minimum logging level to verbose.
 
 :::important
 Make sure that you always return a new instance (not from a variable) of LoggerConfiguration. This limitation is mandatory since Serilog logger does not allow to create multiple instances from the same instance of LoggerConfiguration.  

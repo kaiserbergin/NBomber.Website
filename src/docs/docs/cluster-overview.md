@@ -3,7 +3,7 @@ id: cluster-overview
 title: Cluster overview
 ---
 
-NBomber Cluster is an additional runtime component that provides a way to run NBomber tests in a distributed way (on different nodes).
+NBomber Cluster is an additional runtime component that provides a way to run NBomber tests in a distributed way (on the different nodes).
 
 ## Why do you need cluster?
 
@@ -15,7 +15,7 @@ NBomber Cluster is an additional runtime component that provides a way to run NB
 
 The cluster consists of 2 main components: coordinator and agents. The main role of agents is to execute test scenarious, they also collect statistics and send it to the coordinator.
 
-The coordinator performs the test, orchestrates the test between agents, collects and calculates statistics from all agents. As you can see, the coordinator plays a very important role in the execution of the test.
+The coordinator performs a test, orchestrates a test between agents, collects and calculates statistics from all agents. As you can see, the coordinator plays a very important role in the execution of a test.
 
 :::note
 The coordinator should be a singleton for the whole cluster. In terms of application structure, the coordinator and agents - it's the same NBomber application packaged with different configuration files.

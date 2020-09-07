@@ -54,7 +54,7 @@ type Scenario = {
 
 </Tabs>
 
-You can think of a Step like a function which execution time will be measured.
+You can think of a Step as a function its execution time will be measured.
 
 ```fsharp
 // it's pseudocode example 

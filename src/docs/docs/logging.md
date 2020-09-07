@@ -6,7 +6,7 @@ title: Logging
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This document will help you learn about logging in NBomber tests, options to configure, and also it gives you an introduction to Serilog logger and data sinks.
+This document will help you learn about logging in NBomber tests, options to configure, and also it will give you an introduction to Serilog logger and data sinks.
 
 - [Logging in NBomber tests](logging#logging-in-nbomber-tests)
 - [Configuring logging](logging#configuring-logging)
@@ -15,7 +15,7 @@ This document will help you learn about logging in NBomber tests, options to con
 ## Logging in NBomber tests
 
 :::note
-NBomber is using [Serilog](https://serilog.net/) library for logging. You don't need to install it, it's included already.
+NBomber uses [Serilog](https://serilog.net/) library for logging. You don't need to install it, it's already included.
 :::
 
 In order to start logging you need to take [Step.Context](core-abstractions#step-context) or [Scenario.Context](core-abstractions#scenario-context) (depending on your execution phase) and access Logger interface. Here is an example:
@@ -36,7 +36,7 @@ Scenario.create "scenario_name" [step]
 })
 ```
 
-If you want to use logger out of NBomber context you can get access via static property.
+If you want to use logger out of NBomber context you can get access via the static property.
 
 ```fsharp
  Log.Logger.Information("hello world!") 
@@ -44,16 +44,16 @@ If you want to use logger out of NBomber context you can get access via static p
 
 ## Configuring logging
 
-By default NBomber logger writes logs only to console and file sinks with the following configuration.
+By default NBomber logger writes logs only to a console and file sinks with the following configuration.
 
 :::note
 
-What is sink?
+What is a sink?
 
 Structured log events (messages) are written to sinks and each sink is responsible for writing it to its own backend, database, store etc.
 
-- [Console sink](https://github.com/serilog/serilog-sinks-console) is a mandatory sink which NBomber use to print out text on console. This sink can't be customized or overridden. Console sink prints only *Info* and *Warning* logs. 
-- [File sink](https://github.com/serilog/serilog-sinks-file) is a mandatory sink which NBomber use to write logs into file. This sink can't be customized or overridden. Also, File sink writes all types of logs (*Verbose, Debug, Info, Warning, Error, Fatal*), therefore if you decide to trace some request/response payload this sink is way to go.
+- [Console sink](https://github.com/serilog/serilog-sinks-console) is a mandatory sink which NBomber uses to print out text on console. This sink can't be customized or overridden. Console sink prints only *Info* and *Warning* logs. 
+- [File sink](https://github.com/serilog/serilog-sinks-file) is a mandatory sink which NBomber uses to write logs into file. This sink can't be customized or overridden. Also, a File sink writes all types of logs (*Verbose, Debug, Info, Warning, Error, Fatal*), therefore if you decide to trace some request/response payload this sink is the way to go.
 
 :::
 
@@ -81,7 +81,7 @@ LoggerConfiguration()
 You can enrich or customize default logger configuration using some other [sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks).
 
 :::important
-Make sure that you always return a new instance (not from a variable) of LoggerConfiguration. This limitation is mandatory since Serilog logger does not allow to create multiple instances from the same instance of LoggerConfiguration.  
+Make sure that you always return a new instance (not from a variable) of LoggerConfiguration. This limitation is mandatory since Serilog logger does not allow creating multiple instances from the same instance of LoggerConfiguration.  
 :::
 
 ```fsharp
@@ -125,12 +125,12 @@ Here is an example of infrastructure config file.
 
 ## Elasticsearch integration
 
-Serilog supports many data storages to save your logs. You can check this [list](https://github.com/serilog/serilog/wiki/Provided-Sinks). But the most used is [Elasticsearch](https://github.com/serilog/serilog-sinks-elasticsearch). Let's try to integrate our NBomber with Elasticsearch to ship our logs there and be able to analyze them using full-text search or aggregation queries. 
+Serilog supports many data storages to save your logs. You can check out this [list](https://github.com/serilog/serilog/wiki/Provided-Sinks). But the most used is [Elasticsearch](https://github.com/serilog/serilog-sinks-elasticsearch). Let's try to integrate our NBomber with Elasticsearch to ship our logs there and be able to analyze them using full-text search or aggregation queries. 
 
 :::note
 Installation prerequisites
 
-You should have installed Elasticsearch database. If you don't have you can use [Docker setup](docker-setup).
+You should have installed Elasticsearch database. If you don't have it you can use [Docker setup](docker-setup).
 :::
 
 ### Add Elasticsearch sink
@@ -184,6 +184,6 @@ dotnet add package Serilog.Sinks.Elasticsearch
 </TabItem>
 </Tabs>
 
-For more information about Elasticsearch sink configuration, please use this [link](https://github.com/serilog/serilog-sinks-elasticsearch).
+For more information about Elasticsearch sink configuration, please follow this [link](https://github.com/serilog/serilog-sinks-elasticsearch).
 
 <!-- TODO: gif animation -->

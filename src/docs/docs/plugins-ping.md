@@ -3,7 +3,7 @@ id: plugins-ping
 title: Ping plugin
 ---
 
-For any load testing, you need to know the physical latency between the target system and the test agent. For these purposes, NBomber has a Ping plugin that runs on the background and checks the specified web host by sending a PING request to measure the latency. It sends PING only once on the test start.
+For any load testing, you need to know physical latency between the target system and the test agent. For these purposes, NBomber has a Ping plugin that runs in the background and checks the specified web host by sending a PING request to measure the latency. It sends a PING only once on the test start.
 
 ## API
 

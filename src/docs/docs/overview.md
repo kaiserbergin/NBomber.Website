@@ -150,7 +150,7 @@ namespace NBomberTest
 dotnet run -c Release
 ```
 
-After running a test you will get report. Don't get scared, we can skip it for now. Later we will understand how to analyse such reports.
+After running a test you will get a report. Don't get scared, we can skip it for now. Later we will understand how to analyse such reports.
 
 ### Create simple HTTP load test
 
@@ -297,4 +297,4 @@ Now you can easily integrate NBomber load tests into your CI/CD pipeline (Jenkin
 
 8. Add realtime metrics
 
-NBomber provides a way to sink your test results in any data storage. It helps you track performance trends in a realtime and make comparison with previous results(historicals). [Read mode]() -->
+NBomber provides a way to sink your test results in any data storage. It helps you to track performance trends in realtime and make comparison with previous results(historicals). [Read mode]() -->
