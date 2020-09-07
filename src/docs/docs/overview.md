@@ -126,7 +126,7 @@ namespace NBomberTest
                 // for example: send http request, SQL query etc
                 // NBomber will measure how much time it takes to execute your logic
 
-                await Task.Delay(seconds 1);
+                await Task.Delay(TimeSpan.FromSeconds(1));
                 return Response.Ok();
             });
             

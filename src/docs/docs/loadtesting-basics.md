@@ -60,28 +60,3 @@ Many folks do believe that they need to start testing using a smooth ramp-up. Us
 
 To start, we recommend you start with small *unit load tests*. These are designed to run on each commit for specific API endpoints and may take only 3-5 minutes each. But there could be some side effects (GC pause, memory leak, networking problems, etc) which you can catch only running tests for a long period.
 Therefore, you should have a nightly load test that will run at night for 30 minutes (or longer) per endpoint. The main goal of nightly running tests is to bring confidence that your system works stable despite any long period of time.
-
-
-
-<!-- 
-## Load simulations
-
-## Test structure
- 
-
-## What to measure about performance
-
-People usually think about performance wrong, resulting in asking wrong questions like can your server handle 10K connections or 2000000 users?.
-
-…
-
-What is important to remember: Performance is a multidimensional characteristics. its impossible to make a picture of the system performance using only 1 metric.
-
-When you asked about how good some stream of something is performing, you should think about:
-
-    Throughput, Bandwidth
-    Latency
-    Response time
-    Footprint
-
-The relation between throughput and latency is described by Little’s law. -->
