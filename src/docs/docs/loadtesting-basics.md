@@ -60,3 +60,7 @@ Many folks do believe that they need to start testing using a smooth ramp-up. Us
 
 To start, we recommend you start with small *unit load tests*. These are designed to run on each commit for specific API endpoints and may take only 3-5 minutes each. But there could be some side effects (GC pause, memory leak, networking problems, etc) which you can catch only running tests for a long period.
 Therefore, you should have a nightly load test that will run at night for 30 minutes (or longer) per endpoint. The main goal of nightly running tests is to bring confidence that your system works stable despite any long period of time.
+
+## Controllability
+
+Make sure that you have controllability over your test input. Basically, your test input/output should be consistent between runs. Inconsistent test input will lead you to inconsistent results.

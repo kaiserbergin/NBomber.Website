@@ -57,6 +57,7 @@ Scenario.create "hello_world" [step1; step2; step3]
 |> NBomberRunner.withTestName "insert_data"
 
 |> NBomberRunner.withReportFileName "my_report"
+|> NBomberRunner.withReportFolder "./my_reports"
 |> NBomberRunner.withReportFormats [ReportFormat.Txt; ReportFormat.Csv; ReportFormat.Html; ReportFormat.Md]
 |> NBomberRunner.withoutReports
 |> NBomberRunner.withReportingSinks [influxDbSink; prometheusSink] (seconds 30)   
@@ -95,6 +96,7 @@ Scenario.create "hello_world" [step1; step2; step3]
     ],
 
     "ReportFileName": "custom_report_name",
+    "ReportFolder": "./my_reports",
     "ReportFormats": [ "Html", "Txt", "Csv", "Md" ]
   }
 }
@@ -146,6 +148,7 @@ For such cases, NBomber provides dedicated configuration settings called **Custo
     }],    
 
     "ReportFileName": "custom_report_name",
+    "ReportFolder": "./my_reports",
     "ReportFormats": [ "Html", "Txt", "Csv", "Md" ]
   }
 }

@@ -450,6 +450,19 @@ NBomberRunner.withLoggerConfig(fun () ->
     )
 )    
 
+/// Sets output report name.
+/// Default name: nbomber_report.
+NBomberRunner.withReportFileName "my_report"
+
+/// Sets output report folder path.
+/// Default folder path: "./reports".
+NBomberRunner.withReportFolder "./my_reports"
+
+NBomberRunner.withReportFormats [ReportFormat.Txt; ReportFormat.Csv; ReportFormat.Html; ReportFormat.Md]
+
+/// Sets to run without reports
+NBomberRunner.withoutReports
+
 /// Sets reporting sinks.    
 /// Reporting sink is used to save real-time metrics to correspond database.
 /// (reportingSinks: IReportingSink list) (sendStatsInterval: TimeSpan)
@@ -469,14 +482,14 @@ NBomberRunner.withApplicationType ApplicationType.Console
 /// Runs test
 NBomberRunner.run
 
-/// Runs test with CLI arguments.
-/// The following CLI arguments are supported:
+/// Runs scenarios with arguments.
+/// The following CLI commands are supported:
 /// -c or --config: loads configuration,
 /// -i or --infra: loads infrastructure configuration.
 /// Examples of possible args:
-/// [|"-c"; "config.yaml"; "-i"; "infra_config.yaml"|]
-/// [|"--config"; "config.yaml"; "--infra"; "infra_config.yaml"|]
-NBomberRunner.runWithArgs ["-c"; "config.json"; "-i"; "infra-config.json"]
+/// -c config.json -i infra_config.json
+/// --config=config.json --infra=infra_config.json
+NBomberRunner.runWithArgs ["--config=config.json --infra=infra_config.json"]
 ```
 
 ## Data feed

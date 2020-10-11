@@ -13,11 +13,12 @@ Welcome to NBomber! This tutorial will explore the basics of using NBomber and h
 1. The main reason behind NBomber is to provide a **lightweight** framework for writing load tests which you can use to test literally **any** system and simulate **any** production workload. We wanted to provide only a few abstractions so that we could describe any type of load and still have a simple, intuitive API. 
 2. Another goal is to provide building blocks to validate your POC (proof of concept) projects by applying any complex load distribution.  
 3. With NBomber you can test any PULL or PUSH system (HTTP, WebSockets, GraphQl, gRPC, SQL Databse, MongoDb, Redis etc). 
+4. With NBomber **you can convert some of your integration tests to load tests easily**.
 
 NBomber as a modern framework provides:
 - Zero dependencies on protocol (HTTP/WebSockets/AMQP/SQL) 
 - Zero dependencies on semantic model (Pull/Push)
-- Very flexible configuration and dead simple API
+- Very flexible configuration and dead simple API (F#/C#/JSON)
 - [Cluster support](cluster-overview)
 - [Realtime Reporting](reporting-sinks)
 - [Plugins support](plugins-overview)
