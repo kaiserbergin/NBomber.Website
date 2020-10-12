@@ -227,7 +227,7 @@ type ConnectionPoolSetting = {
 
 type ScenarioSetting = {
     ScenarioName: string
-    WarmUpDuration: string
+    WarmUpDuration: string option
     LoadSimulationsSettings: LoadSimulationSettings list
     ConnectionPoolSettings: ConnectionPoolSetting list option
     CustomSettings: string option
