@@ -96,7 +96,7 @@ module.exports = {
       copyright: `Copyright © ${new Date().getFullYear()} Pragmatic Flow`,
     },
     prism: {
-      theme: require('prism-react-renderer/themes/github'),
+      theme: require('prism-react-renderer/themes/dracula'),
       additionalLanguages: ['csharp', 'fsharp'],
     },
   },
