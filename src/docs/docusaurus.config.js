@@ -3,11 +3,15 @@ module.exports = {
   tagline: 'NBomber',
   url: 'https://nbomber.com',
   baseUrl: '/',
+  onBrokenLinks: 'throw',
+  onBrokenMarkdownLinks: 'warn',
   favicon: 'img/nbomber-logo.ico',
-  organizationName: 'Pragmatic Flow', // Usually your GitHub org/user name.
-  projectName: 'NBomber', // Usually your repo name.
+  organizationName: 'Pragmatic Flow',
+  projectName: 'NBomber',
   themeConfig: {
-    disableDarkMode: false,  
+    //disableDarkMode: false,  
+    disableSwitch: true,
+    defaultMode: 'dark',
     respectPrefersColorScheme: true,  
     gtag: {
       trackingID: 'UA-139868155-1'
@@ -20,9 +24,9 @@ module.exports = {
         href: 'https://nbomber.com',
         target: '_self'
       },
-      links: [
+      items: [
         {
-          to: 'docs/',
+          to: 'docs/overview',
           activeBasePath: 'docs',
           label: 'Docs',
           position: 'left',
@@ -104,9 +108,7 @@ module.exports = {
     [
       '@docusaurus/preset-classic',
       {
-        docs: {
-          // It is recommended to set document id as docs home page (`docs/` path).
-          homePageId: 'overview',
+        docs: {          
           sidebarPath: require.resolve('./sidebars.js'),
           // Please change this to your repo.
           //editUrl: 'https://github.com/facebook/docusaurus/edit/master/website/',          

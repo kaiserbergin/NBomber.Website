@@ -6,6 +6,62 @@ title: Configuration
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
+
+
+Another popular use case is to parse your JSON config file settings. For introducing dynamic behavior we often use configuration files. Let's assume that we have file config.json with the following content:
+
+```json {17} title="config.json"
+{
+    "TestSuite": "example",
+    "TestName": "custom_settings",
+
+    "TargetScenarios": ["my_scenario"],
+
+    "GlobalSettings": {
+        "ScenariosSettings": [
+            {
+                "ScenarioName": "my_scenario",
+                "WarmUpDuration": "00:00:00",
+
+                "LoadSimulationsSettings": [                    
+                    { "InjectPerSec": [20, "00:00:05"] }
+                ],
+
+                "CustomSettings": {
+                    "TestField": 1,
+                    "PauseMs": 200
+                }
+            }
+        ], 
+    }
+}
+```
+
+```fsharp
+// this type represent CustomSettings section within JSON file.
+[<CLIMutable>]
+type MySettings = {
+    TestField: int
+    PauseMs: int
+}
+
+let step = Step.create("step", fun context -> ...)
+
+Scenario.create "parse_config" [step]
+|> Scenario.withInit(fun context -> task {
+    let mySettings = context.CustomSettings.Get<MySettings>()
+    // now you can use parsed settings
+    context.Logger.Information(
+        $"scenario init received MySettings.TestField '{mySettings.TestField}"
+    )
+})
+```
+
+You can read more about configuration on this [page](configuration)
+
+
+
+
 This document will help you learn about configuring NBomber tests. It will cover the topic of dynamic configuration via config files. NBomber separate configuration on two types:
 
 - **Test configuration**: defines all kinds of settings related only to tests. It could be settings for load simulation, settings to choose target scenarios to run, duration of the test, database connection strings, etc.

@@ -21,10 +21,10 @@ Here is an example of NBomber statistics report that we try to analyze together.
 __step__|__details__
 ---|---
 name|`pull html`
-request count|all = `1491`, ok = `1491`, failed = `0`
-latency|RPS = `105`, min = `50`, mean = `1084`, max = `5762`
-latency percentile|50% = `752`, 75% = `1048`, 95% = `3731`, 99% = `3901`, StdDev = `999`
-data transfer|min = `17.880 Kb`, mean = `17.880 Kb`, max = `17.880 Kb`, all = `26.030 MB`
+request count|all = `200`, ok = `200`, failed = `0`, RPS = `20`
+latency|min = `93`, mean = `314.5`, max = `550.5`, StdDev = `112.5`
+latency percentile|50% = `297.5`, 75% = `314.5`, 95% = `492.7`, 99% = `492.7`
+data transfer|min = `19.030 KB`, mean = `19.030 KB`, max = `19.030 KB`, all = `3.720 MB`
 
 > **Ping statistics table**
 

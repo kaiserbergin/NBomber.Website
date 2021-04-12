@@ -19,11 +19,16 @@ NBomber as a modern framework provides:
 - Zero dependencies on protocol (HTTP/WebSockets/AMQP/SQL) 
 - Zero dependencies on semantic model (Pull/Push)
 - Very flexible configuration and dead simple API (F#/C#/JSON)
-- [Cluster support](cluster-overview)
+- Cluster support
+- Realtime Reporting
+- CI/CD integration
+- Data feed support
+
+<!-- - [Cluster support](cluster-overview)
 - [Realtime Reporting](reporting-sinks)
 - [Plugins support](plugins-overview)
 - [CI/CD integration](test-automation#cicd-integration)
-- [Data feed support](core-abstractions#data-feed) 
+- [Data feed support](core-abstractions#data-feed)  -->
 
 ## Step by step introduction
 
@@ -31,7 +36,7 @@ NBomber as a modern framework provides:
 
 Installation prerequisites
 
-- [.NET Core 2.1 SDK](https://dotnet.microsoft.com/download) or later.
+- [.NET Core 3.1 SDK](https://dotnet.microsoft.com/download) or later.
 - [Visual Studio Code](https://code.visualstudio.com/) with [F#](https://marketplace.visualstudio.com/items?itemName=Ionide.Ionide-fsharp) or [C#](https://marketplace.visualstudio.com/items?itemName=ms-dotnettools.csharp) extension installed.
 
 :::
@@ -70,7 +75,9 @@ Let's fist start with an empty hello world example to get more familiar with NBo
 ```fsharp title="Program.fs"
 open System
 open System.Threading.Tasks
-open FSharp.Control.Tasks.V2.ContextInsensitive
+
+open FSharp.Control.Tasks.NonAffine
+
 open NBomber.Contracts
 open NBomber.FSharp
 
@@ -89,7 +96,7 @@ let main argv =
         // NBomber will measure how much time it takes to execute your step
 
         do! Task.Delay(seconds 1)
-        return Response.Ok()
+        return Response.ok()
     })
 
     // second, we add our step to the scenario
@@ -97,8 +104,9 @@ let main argv =
     // you can think of scenario like a job of sequential operations
     // you can add several steps into one scenario
 
-    Scenario.create "hello_world" [step]     
-    |> NBomberRunner.registerScenario
+    let scenario = Scenario.create "hello_world" [step]     
+    
+    NBomberRunner.registerScenario scenario
     |> NBomberRunner.run
     |> ignore    
 
@@ -153,7 +161,7 @@ dotnet run -c Release
 
 After running a test you will get a report. Don't get scared, we can skip it for now. Later we will understand how to analyse such reports.
 
-### Create simple HTTP load test
+### Create simple HTTP load test (not pruduction-ready)
 
 Now, let's add HTTP client to test a web server and then run it. 
 
@@ -170,7 +178,9 @@ Now, let's add HTTP client to test a web server and then run it.
 ```fsharp title="Program.fs"
 open System
 open System.Net.Http
-open FSharp.Control.Tasks.V2.ContextInsensitive
+
+open FSharp.Control.Tasks.NonAffine
+
 open NBomber.Contracts
 open NBomber.FSharp
 
@@ -178,19 +188,18 @@ open NBomber.FSharp
 let main argv =
     
     use httpClient = new HttpClient()
-    
-    let step = Step.create("step", fun context -> task {        
-        
-        let! response = httpClient.GetAsync("https://nbomber.com",
-                                            context.CancellationToken)
 
-        match response.IsSuccessStatusCode with
-        | true  -> return Response.Ok()
-        | false -> return Response.Fail()
+    let step = Step.create("fetch_html_page", fun context -> task {
+
+        let! response = httpClient.GetAsync("https://nbomber.com")
+
+        return if response.IsSuccessStatusCode then Response.ok()
+               else Response.fail()
     })
+
+    let scenario = Scenario.create "simple_http" [step]        
     
-    Scenario.create "hello_world" [step] 
-    |> NBomberRunner.registerScenario
+    NBomberRunner.registerScenario scenario
     |> NBomberRunner.run
     |> ignore
 
@@ -200,6 +209,39 @@ let main argv =
 
 <TabItem value="C#">
 
+```csharp title="Program.cs"
+using System;
+using System.Net.Http;
+using NBomber.Contracts;
+using NBomber.CSharp;
+
+namespace NBomberTest
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {   
+            using var httpClient = new HttpClient();
+
+            var step = Step.Create("fetch_html_page", async context =>
+            {
+                var response = await httpClient.GetAsync("https://nbomber.com");
+
+                return response.IsSuccessStatusCode
+                    ? Response.Ok()
+                    : Response.Fail();
+            });
+
+            var scenario = ScenarioBuilder.CreateScenario("simple_http", step);
+
+            NBomberRunner
+                .RegisterScenarios(scenario)
+                .Run();
+        }
+    }
+}
+```
+
 </TabItem>
 </Tabs>
 
@@ -207,11 +249,11 @@ let main argv =
 ### Create production-ready HTTP load test
 
 Now, you got a basic understanding of NBomber and ready to move on. This time we will use:
-- [NBomber.HTTP](plugins-http) plugin to simplify defining and handling of HTTP
-- [NBomber.PingPlugin](plugins-ping) to add additional reporting 
-- Specify load simulation
+- [NBomber.HTTP](plugins-http) - plugin to simplify defining and handling of HTTP
+- [NBomber.PingPlugin](plugins-ping) - to add additional reporting 
+- Concurrency
 
-So, we only need to install missed NBomber.Http package (*NBomber.PingPlugin is included as part of NBomber, we don't need to install it*).
+To proceed we only need to install NBomber.Http package (*NBomber.PingPlugin is included as part of NBomber, we don't need to install it*).
 
 ```code
 dotnet add package NBomber.Http
@@ -228,32 +270,36 @@ dotnet add package NBomber.Http
 <TabItem value="F#">
 
 ```fsharp title="Program.fs"
-open System
-open System.Net.Http
-open FSharp.Control.Tasks.V2.ContextInsensitive
 open NBomber.Contracts
 open NBomber.FSharp
-open NBomber.Plugins.Network.Ping
 open NBomber.Plugins.Http.FSharp
+open NBomber.Plugins.Network.Ping
 
 [<EntryPoint>]
-let main argv =
+let main argv =    
     
-    // it's optional Ping plugin that brings additional reporting data
+    let step = Step.create("fetch_html_page", 
+                           clientFactory = HttpClientFactory.create(), 
+                           execute = fun context ->
+
+        Http.createRequest "GET" "https://nbomber.com"
+        |> Http.withHeader "Accept" "text/html"
+        |> Http.send context
+    })    
+    
+    let scenario =
+        Scenario.create "simple_http" [step]     
+        |> Scenario.withWarmUpDuration(seconds 5)
+        |> Scenario.withLoadSimulations [
+            InjectPerSec(rate = 100, during = seconds 30)
+        ]    
+    
+    // creates ping plugin that brings additional reporting data
     let pingConfig = PingPluginConfig.CreateDefault ["nbomber.com"]
     use pingPlugin = new PingPlugin(pingConfig)
-    
-    // now you use HttpStep instead of NBomber's default Step        
-    let step = HttpStep.create("fetch_html_page", fun context ->
-        Http.createRequest "GET" "https://nbomber.com"        
-    )
-    
-    Scenario.create "hello_world" [step]     
-    |> Scenario.withLoadSimulations [
-        InjectPerSec(rate = 100, during = seconds 10)
-    ]
-    |> NBomberRunner.registerScenario
-    |> NBomberRunner.withWorkerPlugins [pingPlugin]
+
+    NBomberRunner.registerScenario scenario
+    |> NBomberRunner.withWorkerPlugins [pingPlugin]    
     |> NBomberRunner.run
     |> ignore
 
@@ -263,6 +309,48 @@ let main argv =
 
 <TabItem value="C#">
 
+```csharp title="Program.cs"
+using System;
+using System.Net.Http;
+using NBomber.Contracts;
+using NBomber.CSharp;
+
+namespace NBomberTest
+{
+    class Program
+    {
+        static void Main(string[] args)
+        {   
+            var step = Step.Create("fetch_html_page", 
+                                   clientFactory: HttpClientFactory.Create(), 
+                                   execute: context =>
+            {
+                var request = Http.CreateRequest("GET", "https://nbomber.com")
+                                  .WithHeader("Accept", "text/html");
+
+                return Http.Send(request, context);
+            }
+
+            var scenario = ScenarioBuilder
+                .CreateScenario("simple_http", step)
+                .WithWarmUpDuration(TimeSpan.FromSeconds(5))
+                .WithLoadSimulations(
+                    Simulation.InjectPerSec(rate: 100, during: TimeSpan.FromSeconds(30))
+                );
+
+            // creates ping plugin that brings additional reporting data
+            var pingPluginConfig = PingPluginConfig.CreateDefault(new[] {"nbomber.com"});
+            var pingPlugin = new PingPlugin(pingPluginConfig);                
+
+            NBomberRunner
+                .RegisterScenarios(scenario)
+                .WithWorkerPlugins(pingPlugin)
+                .Run();
+        }
+    }
+}
+```
+
 </TabItem>
 </Tabs>
 
@@ -270,32 +358,6 @@ let main argv =
 
 Finally, you reach this point! Here you can find additional information which helps you in building real world NBomber tests:
 
-- [Learn core abstarctions](core-abstractions)
+- [Learn general concepts](general-concepts)
 - [Loadtesting basics](loadtesting-basics)
 - [Examples](https://github.com/PragmaticFlow/NBomber/tree/dev/examples)
-
-<!-- - [View and analyze reports](./analyze-reports)
-- [Add dynamic configuration](./configuration)
-- [Add test assertions and CI/CD integration](./test_assertions)
-- [Add realtime metrics](./realtime_metrics)
-- [Add distributed cluster support](./cluster_overview) -->
-
-<!-- Now, let's add HTTP client to test some web server.
-
-5. View and analyze statistics results
-
-> put link on html, txt reports, write explanation about RPS, min, max
-
-6. Add test runner integration and test assertions
-
-After several runs of this test, you will be able to define asserts based on statistics result. For this you need to wrap your NBomber load test into your favorite unit test framework([NUnit](https://nunit.org/), [XUnit](https://xunit.net/), [Expecto](https://github.com/haf/expecto)). [Read more](./test_assertions)
-
-You can think of NBomber as a process that runs load tests and returns the result and then it's your decision what to do with this result(ignore, analyze, throw an exception).
-
-7. Integrate load test into your CI/CD pipeline
-
-Now you can easily integrate NBomber load tests into your CI/CD pipeline (Jenkins, TeamCity, Bamboo) since NBomber test can be executed by any popular unit test framework.
-
-8. Add realtime metrics
-
-NBomber provides a way to sink your test results in any data storage. It helps you to track performance trends in realtime and make comparison with previous results(historicals). [Read mode]() -->

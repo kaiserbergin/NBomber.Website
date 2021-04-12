@@ -1,12 +1,12 @@
 ---
-id: core-abstractions
-title: Core abstractions
+id: step-api
+title: Step API
 ---
 
 import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
-This document will help you learn about NBomber core abstractions in more detail. The whole API is mainly built around these building blocks:
+This document will help you learn about NBomber general concepts in more detail. The whole API is mainly built around these building blocks:
 
 - [Step](#step)
 - [Scenario](#scenario)
@@ -14,128 +14,115 @@ This document will help you learn about NBomber core abstractions in more detail
 - [Data feed](#data-feed)
 - [Connection pool](#connection-pool)
 
-## Step
-
-Step and Scenario play the most important role in building real-world simulations. A Step helps you to define only your test function. A Scenario is helping you to organize steps into test flow with different load simulations (concurrency control). 
-
-<Tabs
-  groupId="example"
-  defaultValue="F#"
-  values={[
-    {label: 'F#', value: 'F#'},
-    {label: 'C#', value: 'C#'},
-  ]
-}>
-<TabItem value="F#">
-
-```fsharp
-// Step is a basic element which will be executed and measured
-type Step = {
-    StepName: string    
-    Execute: IStepContext -> Task<Response>
-    ConnectionPool: ConnectionPool
-    Feed: IFeed
-}
-
-// Scenario is a container for steps and load simulations
-type Scenario = {
-    ScenarioName: string
-    Steps: Step list     
-    Init: (IScenarioContext -> Task) option 
-    Clean: (IScenarioContext -> Task) option
-    WarmUpDuration: TimeSpan
-    LoadSimulations: LoadSimulation list
-}
-```
-</TabItem>
-
-<TabItem value="C#">
-</TabItem>
-
-</Tabs>
-
-You can think of a Step as a function its execution time will be measured.
-
-```fsharp
-// it's pseudocode example 
-// we create scenario with two steps and run them 
-
-let step1 = Step.create("step_1", fun () -> ...)
-let step2 = Step.create("step_2", fun () -> ...)
-
-let scenario = Scenario.create "scenario" [step1; step2]
-
-// this is simplified version of how NBomber is executing steps
-// all steps will be executed sequantilly
-for step in scenario.Steps do
-
-    let start = getCurrentTime()
-
-    step.Execute()        
-
-    let end = getCurrentTime()
-
-    // now, we can calculate the latency of given step
-    let latency = end - start
-```
+## Step API
 
 ### Step execution
 
 :::note
 
-All steps within one scenario always execute sequentially. Every step runs in isolated a lightweight thread (*Task<'T>*) provided by a Scenario.
+By default all steps within one scenario execute sequentially. Every step runs in isolated a lightweight thread (*Task<'T>*) provided by a Scenario. You can change step order in runtime via using function *Scenario.withCustomStepsOrder*
 
 :::
+
+Here is an example of a default (sequential) execution order.
 
 ```fsharp
 let step1 = Step.create("step_1", fun context -> task { 
 
-    context.Logger.Information("step 1 is invoked")
+    do! Task.Delay(seconds 1)
+    context.Logger.Information("step 1 is invoked")    
     
-    return Response.Ok() 
+    return Response.ok() 
 })
 
 let step2 = Step.create("step_2", fun context -> task {         
     
-    context.Logger.Information("step 2 is invoked")    
+    do! Task.Delay(seconds 1)
+    context.Logger.Information("step 2 is invoked")        
     
-    return Response.Ok() 
+    return Response.ok() 
 })
 
-Scenario.create "scenario" [step1; step2]
+// here you create scenario and define (default) step order
+// you also can define them in opposite direction, like [step2; step1] 
+// or even repeat [step1; step1; step1; step2]  
+Scenario.create "scenario" [step1; step2] 
+|> Scenario.withoutWarmUp
+|> Scenario.withLoadSimulations [KeepConstant(copies = 1, during = seconds 10)]
+|> NBomberRunner.registerScenario
+|> NBomberRunner.run
+|> ignore
 
-// console output will have:
+// console output:
 // step 1 is invoked
 // step 2 is invoked
 // step 1 is invoked
 // step 2 is invoked
 ```
 
-In case of step exception or returning Response.Fail() the execution will be restarted from zero step.
+Here is an example of a custom execution order. This one can be used for more advanced cases when you need to introduce some random step order in your scenario.
+
+```fsharp
+let step1 = Step.create("read", fun context -> task { 
+
+    do! Task.Delay(seconds 1)
+    context.Logger.Information("step 1 is invoked")
+    
+    return Response.ok() 
+})
+
+let step2 = Step.create("insert", fun context -> task {         
+    
+    do! Task.Delay(seconds 1)
+    context.Logger.Information("step 2 is invoked")    
+    
+    return Response.ok() 
+})
+
+Scenario.create "scenario" [step1; step2]
+|> Scenario.withoutWarmUp
+|> Scenario.withLoadSimulations [KeepConstant(copies = 1, during = seconds 10)]
+|> NBomberRunner.registerScenario
+|> NBomberRunner.run
+|> ignore
+
+// console output:
+// step 1 is invoked
+// step 2 is invoked
+// step 1 is invoked
+// step 2 is invoked
+```
+
+In case of step exception or returning Response.fail() the execution will be restarted from zero step.
 
 ```fsharp
 let step1 = Step.create("step_1", fun context -> task { 
 
+    do! Task.Delay(seconds 1)
     context.Logger.Information("step 1 is invoked")
     
-    return Response.Fail() // or you throw exception
+    return Response.fail() // or you throw exception
 })
 
 let step2 = Step.create("step_2", fun context -> task {         
     
     // this step will not be executed
+    do! Task.Delay(seconds 1)
     context.Logger.Information("step 2 is invoked")    
     
-    return Response.Ok() 
+    return Response.ok() 
 })
 
 Scenario.create "scenario" [step1; step2]
+|> Scenario.withoutWarmUp
+|> Scenario.withLoadSimulations [KeepConstant(copies = 1, during = seconds 10)]
+|> NBomberRunner.registerScenario
+|> NBomberRunner.run
+|> ignore
 
-// console output will have:
+// console output:
 // step 1 is invoked
-// error
 // step 1 is invoked
-// error
 ```
 
 ### Step hosting
@@ -144,15 +131,21 @@ The same step can be hosted in several concurrent scenarios.
 
 ```fsharp
 let step1 = Step.create("step_1", fun context -> task {         
-    return Response.Ok() 
+    do! Task.Delay(seconds 1)
+    return Response.ok() 
 })
 
 let step2 = Step.create("step_2", fun context -> task { 
-    return Response.Ok() 
+    do! Task.Delay(seconds 1)
+    return Response.ok() 
 })
 
-Scenario.create "scenario_1" [step1; step1; step2] // you repeat same step
-Scenario.create "scenario_2" [step2; step1; step2] // you can change order
+let sc1 = Scenario.create "scenario_1" [step1; step1; step2] // you repeat same step
+let sc2 = Scenario.create "scenario_2" [step2; step1; step2] // you change order
+
+NBomberRunner.registerScenarios [sc1; sc2] // these scenarios will run concurrently
+|> NBomberRunner.run
+|> ignore
 ```
 
 ### Step response
@@ -170,41 +163,50 @@ Every step after executing can return a response as an input parameter for the n
 
 ```fsharp
 let step1 = Step.create("step_1", fun context -> task {         
-    return Response.Ok(42) 
+    do! Task.Delay(seconds 1)
+    return Response.ok(42) 
 })
 
 let step2 = Step.create("step_2", fun context -> task { 
         
+    do! Task.Delay(seconds 1)        
     let step1Response = context.GetPreviousStepResponse<int>()
 
     context.Logger.Information("step 1 response is '{0}'", step1Response)
 
-    return Response.Ok() 
+    return Response.ok() 
 })
 
 Scenario.create "scenario" [step1; step2]
+|> Scenario.withoutWarmUp
+|> Scenario.withLoadSimulations [KeepConstant(copies = 1, during = seconds 10)]
+|> NBomberRunner.registerScenario
+|> NBomberRunner.run
+|> ignore
 
-// console output will have:
+// console output:
+// step 1 response is '42'
+// step 1 response is '42'
 // step 1 response is '42'
 ```
 
 NBomber provides a way to set the size of a response for later usage for statistics related to data transfering.
 
 ```fsharp
-Response.Ok(payload = "some HTTP response", sizeBytes = 200)
+Response.ok(payload = "some HTTP response", sizeBytes = 200)
 ```
 
 Also, you can set even your own latency if you know that you need to correct the final value (it could be useful for PUSH scenarios when your response is buffered, meaning that you receive it earlier than NBomber function was invoked).
 
 ```fsharp
-Response.Ok(latencyMs = 200)
+Response.ok(latencyMs = 200)
 ```
 
 You also can return a fail.
 ```fsharp
-Response.Fail()
-Response.Fail(reason: string)
-Response.Fail(ex: Exception)
+Response.fail()
+Response.fail(reason: string)
+Response.fail(ex: Exception)
 ```
 
 ### Step pause
@@ -227,8 +229,8 @@ In case if you don't want to include some step into statistics you can use *doNo
 
 ```fsharp
 Step.create(name = "invisible", 
-            execute = fun () -> task { return Response.Ok() }, 
-            doNotTrack = true)
+                 execute = fun () -> task { return Response.Ok() }, 
+                 doNotTrack = true)
 ```
 
 
@@ -293,6 +295,31 @@ type IStepContext<'TConnection,'TFeedItem> =
     abstract StopCurrentTest: reason:string -> unit
 ```
 
+### Step pause
+
+If for some cases you want to simulate pause you should use these functions:
+
+```fsharp
+let login = Step.create("login", fun () -> ...)
+let home  = Step.create("home_page", fun () -> ...)
+let pause = Step.createPause(minutes 1)
+//let pause = Step.createPause(seconds 10)
+//let pause = Step.createPause(milliseconds 200)
+//let pause = Step.createPause(fun () -> seconds config.PauseValue)
+
+let scenario = Scenario.create "scenario" [login; pause; home]
+```
+
+### Step tracking
+
+In case if you don't want to include a specific step into statistics you can use *doNotTrack = true*.
+
+```fsharp
+Step.create(name = "invisible_step", 
+            doNotTrack = true,
+            execute = fun context -> task { return Response.ok() })
+```
+
 ## Scenario
 
 Scenario helps to organize steps into sequential flow with different load simulations (concurrency control). 
@@ -345,6 +372,11 @@ Scenario.withLoadSimulations [
     /// Injects a given number of scenario copies at a constant rate, 
     /// defined in scenarios per second, during a given duration. 
     InjectPerSec(rate = 10, during = seconds 30)
+    
+    /// For open system:
+    /// Injects a random number of scenario copies at a constant rate, 
+    //  defined in scenarios per second, during a given duration.
+    InjectPerSecRandom(minRate = 10, maxRate = 50, during = seconds 30)
 ]
 ```
 
@@ -465,8 +497,12 @@ NBomberRunner.withoutReports
 
 /// Sets reporting sinks.    
 /// Reporting sink is used to save real-time metrics to correspond database.
-/// (reportingSinks: IReportingSink list) (sendStatsInterval: TimeSpan)
-NBomberRunner.withReportingSinks [influxDbSink] (seconds 30)
+/// (reportingSinks: IReportingSink list)
+NBomberRunner.withReportingSinks [influxDbSink]
+
+/// Sets real-time reporting interval.
+/// Default value: 10 seconds, min value: 5 sec
+NBomberRunner.withReportingInterval(seconds 30)
 
 /// Sets worker plugins.
 /// Worker plugin is a plugin that starts at the test start and works as a background worker.
@@ -503,7 +539,7 @@ Data feed helps you to inject dynamic data into your test. It could be very valu
 // to fetch data from any other source
 ////////////////////////////////////
 
-let data = [1; 2; 3; 4; 5] |> FeedData.fromSeq |> FeedData.shuffleData
+let data = [1; 2; 3; 4; 5] |> FeedData.shuffleData
 //let data = FeedData.fromJson<User> "users_feed_data.json"
 //let data = FeedData.fromCsv<User> "users_feed_data.csv"
 
@@ -530,6 +566,7 @@ let userFeed = FeedData.fromCsv<User> "users_feed_data.csv"
 ////////////////////////////////////
 let step = Step.create("simple step", feed, fun context -> task {
 
+    do! Task.Delay(seconds 1)
     context.Logger.Debug("Data from feed: {FeedItem}", context.FeedItem)    
     
     return Response.Ok()

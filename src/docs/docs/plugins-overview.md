@@ -10,14 +10,14 @@ NBomber provides a concept of plugins that you can use to extend the functionali
 
 - [Http plugin](plugins-http) - a simple DSL for working with HTTP.
 - [Ping plugin](plugins-ping) - a plugin that executes ping logic to gather networking metrics.
-- [Chaos monkey plugin]() - TBD
-- [AMQP plugin]() - TBD
-- [MQTT plugin]() - TBD
-- [gRPC plugin]() - TBD
-- [SQL plugin]() - TBD
-- [MongoDB plugin]() - TBD
-- [Redis plugin]() - TBD
-- [Kafka plugin]() - TBD
+- [Chaos monkey plugin](plugins-ping) - TBD
+- [AMQP plugin](plugins-ping) - TBD
+- [MQTT plugin](plugins-ping) - TBD
+- [gRPC plugin](plugins-ping) - TBD
+- [SQL plugin](plugins-ping) - TBD
+- [MongoDB plugin](plugins-ping) - TBD
+- [Redis plugin](plugins-ping) - TBD
+- [Kafka plugin](plugins-ping) - TBD
 
 ## Plugins development
 

@@ -1,17 +1,20 @@
 ---
-id: best-practices
-title: Best practices
+id: project-settings
+title: .NET Project settings
 ---
 
-## .NET project settings
+In order to get maximum from NBomber you should edit your project settings using the following configurations:
 
-- .NET runtime version: if you don't have any dependencies on the old .NET 4.6 framework we recommend you use at least .NET Core 3.1.
+## .NET runtime version
+If you don't have any dependencies on the old .NET 4.6 framework we recommend you use at least .NET Core 3.1.
 
 ```xml
 <TargetFramework>netcoreapp3.1</TargetFramework>
 ```
 
-- GC settings: based on the experience we find out that GC should be switched to the server and concurrent mode:
+## GarbageCollection settings 
+
+GarbageCollection should be switched to the server and concurrent mode:
 
 ```xml
 <ServerGarbageCollection>true</ServerGarbageCollection>
@@ -32,5 +35,3 @@ The full project config:
 
 </Project>
 ```
-
-TBD
