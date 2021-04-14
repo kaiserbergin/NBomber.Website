@@ -1,6 +1,6 @@
 module.exports = {
   someSidebar: {    
-    'Getting Started': ['overview', 'loadtesting-basics'],
+    'Getting Started': ['overview', 'loadtesting-basics', 'community'],
     'Using NBomber': ['general-concepts'],
     //'Realtime Reporting': ['reporting-overview', 'sinks-influxdb'],    
     //'Distributed Cluster': ['cluster-overview']

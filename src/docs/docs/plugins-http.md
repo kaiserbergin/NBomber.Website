@@ -111,7 +111,7 @@ namespace CSharp
 
 ### Http step
 
-The main thing that this plugin adds is a convenient way to define the NBomber [step](core-abstractions#step) that creates a Http request and then sends it.
+The main thing that this plugin adds is a convenient way to define the NBomber [step](general-concepts#step) that creates a Http request and then sends it.
 
 ```fsharp
 HttpStep.create (name: string,
@@ -345,6 +345,6 @@ To work with the JSON format, you can use any library you prefer. Here is a list
 
 ## Best practices 
 
-- To test HTTP use **LoadSimulation.InjectPerSec** since usually web server is an open system. You can read more [here](core-abstractions#load-simulations).
+- To test HTTP use **LoadSimulation.InjectPerSec** since usually web server is an open system. You can read more [here](general-concepts#load-simulations-intro).
 - For debugging or tracing you can use **LoadSimulation.KeepConstant** with **copies = 1** since for this simulation NBomber will use a single task which is easier to debug.
 - Use [Ping](plugins-ping) plugin to get more info about networking.

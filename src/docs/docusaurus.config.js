@@ -31,23 +31,23 @@ module.exports = {
           label: 'Docs',
           position: 'left',
         },
+        // {
+        //   to: 'docs/changelog',  
+        //   activeBasePath: 'changelog',
+        //   label: 'Changelog',
+        //   position: 'left'
+        // },         
+        //{to: 'blog', label: 'Blog', position: 'left'},
         {
-          to: 'docs/changelog',  
-          activeBasePath: 'changelog',
-          label: 'Changelog',
-          position: 'left'
-        }, 
+          href: 'https://github.com/PragmaticFlow/NBomber',
+          label: 'GitHub',
+          position: 'left',
+        },
         {
           href: 'https://github.com/PragmaticFlow/NBomber/tree/dev/examples',
           label: 'Examples',
           position: 'left'
         },        
-        // {to: 'blog', label: 'Blog', position: 'left'},
-        // {
-        //   href: 'https://github.com/facebook/docusaurus',
-        //   label: 'GitHub',
-        //   position: 'right',
-        // },
       ],
     },
     footer: {

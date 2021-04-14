@@ -11,7 +11,7 @@ This document will help you learn about available options to automate your tests
 
 ## Test Assertions
 
-The Assertions are used to verify that global statistics like response time or a number of failed requests match expectations for the whole simulation. After the test finished [NBomberRunner](./core-abstractions#nbomber-runner) returns [Statistic](./api-contracts#statistics-types) data that you can use to apply assertions.
+The Assertions are used to verify that global statistics like response time or a number of failed requests match expectations for the whole simulation. After the test finished [NBomberRunner](general-concepts#nbomberrunner) returns [Statistic](./api-contracts#statistics-types) data that you can use to apply assertions.
 
 ```fsharp
 stats.RequestCount > 10_000 // all request count

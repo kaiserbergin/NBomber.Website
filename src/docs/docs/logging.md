@@ -18,7 +18,7 @@ This document will help you learn about logging in NBomber tests, options to con
 NBomber uses [Serilog](https://serilog.net/) library for logging. You don't need to install it, it's already included.
 :::
 
-In order to start logging you need to take [Step.Context](core-abstractions#step-context) or [Scenario.Context](core-abstractions#scenario-context) (depending on your execution phase) and access Logger interface. Here is an example:
+In order to start logging you need to take [Step.Context](general-concepts#step-context) or [Scenario.Context](general-concepts#scenario-context) (depending on your execution phase) and access Logger interface. Here is an example:
 
 
 ```fsharp

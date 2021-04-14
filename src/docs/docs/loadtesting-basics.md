@@ -49,7 +49,7 @@ When it comes to load simulation, systems behave in 2 different ways:
 - Open systems, where you keep arrival rate of new clients requests **without waitng on responses**. The good example could be some popular website like Amazon. Under the load new clients arrive even though applications have trouble serving them. Usually, in real-world scenarios systems that use stateless protocols like HTTP are tested as open systems.
 
 :::note
-NBomber allows you to configure load simulation, you can read more [here](core-abstractions#load-simulations).
+NBomber allows you to configure load simulation, you can read more [here](general-concepts#load-simulations-intro).
 :::
 
 ### When I need to use smooth ramp-up simulation?
