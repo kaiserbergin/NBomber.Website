@@ -352,7 +352,6 @@ var failStep = Step.Create("fail_step", async context =>
 
 ```fsharp
 // here is the full type declaration
-[<Struct>]
 type Response = {
     StatusCode: Nullable<int>
     IsError: bool
@@ -377,7 +376,7 @@ Response.fail(error = "error msg", statusCode = 401, sizeBytes = 10)
 
 ```csharp
 // here is the full type declaration
-public struct Response
+public class Response
 {
     public int? StatusCode { get; set; }
     public bool IsError { get; set; }
@@ -548,6 +547,77 @@ var home = Step.Create("home_page", async context =>
 
     // here we get the previous step's response
     var token = context.GetPreviousStepResponse<string>();
+    context.Logger.Information($"login step's response is '{token}'");    
+    
+    return Response.Ok();
+});
+
+var scenario = ScenarioBuilder.CreateScenario("scenario", login, home);
+
+// console output:
+// login step's response is 'JWT token'
+```
+
+</TabItem>
+</Tabs>
+
+Also for more advanced cases, you can share data between steps using context.Data property that giving you Dictionary<string,obj>.
+
+<Tabs
+  groupId="example"
+  defaultValue="F#"
+  values={[
+    {label: 'F#', value: 'F#'},
+    {label: 'C#', value: 'C#'},
+  ]
+}>
+<TabItem value="F#">
+
+```fsharp
+let login = Step.create("login", fun context -> task {    
+    do! Task.Delay(seconds 1)        
+    
+    context.Data.["token"] <- "JWT token"
+    
+    return Response.ok() 
+})
+
+let home = Step.create("home_page", fun context -> task {
+    do! Task.Delay(seconds 1)
+
+    // here we get the previous step's response
+    let token = context.Data.["token"]
+    context.Logger.Information($"login step's response is '{token}'")    
+    
+    return Response.ok()
+})
+
+let scenario = Scenario.create "scenario" [login; home]
+
+// console output:
+// login step's response is 'JWT token'
+```
+
+</TabItem>
+
+<TabItem value="C#">
+
+```csharp
+ar login = Step.Create("login", async context =>
+{    
+    await Task.Delay(TimeSpan.FromSeconds(1));    
+    
+    context.Data["token"] = "JWT token";    
+    
+    return Response.Ok(); 
+});
+
+var home = Step.Create("home_page", async context =>
+{
+    await Task.Delay(TimeSpan.FromSeconds(1));
+
+    // here we get the previous step's response
+    var token = context.Data["token"];
     context.Logger.Information($"login step's response is '{token}'");    
     
     return Response.Ok();
