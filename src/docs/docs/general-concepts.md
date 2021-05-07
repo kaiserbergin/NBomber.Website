@@ -634,7 +634,7 @@ var scenario = ScenarioBuilder.CreateScenario("scenario", login, home);
 
 ### Step pause
 
-If for some cases you want to simulate pause you should use these functions:
+If for some cases you want to simulate pause you should use following functions. They are just an alias for the regular step with enabled doNotTrack flag and delay as step execute body.
 
 <Tabs
   groupId="example"
