@@ -679,7 +679,7 @@ var scenario = ScenarioBuilder.CreateScenario("scenario", login, pause, home);
 
 ### Step timeout
 
-By default, NBomber uses 1 second as a step's timeout. You can change it if you want.
+The time allotted for the step execution. In case of timeout is reached step will be failed with `TimeoutStatusCode (-100)` error code and execution flow will jump to the next scenario iteration. By default, NBomber uses 1 second as a step's timeout. You can change it if you want.
 
 <Tabs
   groupId="example"
