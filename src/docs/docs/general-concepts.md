@@ -634,7 +634,7 @@ var scenario = ScenarioBuilder.CreateScenario("scenario", login, home);
 
 ### Step pause
 
-If for some cases you want to simulate pause you should use these functions:
+If for some cases you want to simulate pause you should use following functions. They are just an alias for the regular step with enabled doNotTrack flag and delay as step execute body.
 
 <Tabs
   groupId="example"
@@ -679,7 +679,7 @@ var scenario = ScenarioBuilder.CreateScenario("scenario", login, pause, home);
 
 ### Step timeout
 
-By default, NBomber uses 1 second as a step's timeout. You can change it if you want.
+The time allotted for the step execution. In case of timeout is reached step will be failed with `TimeoutStatusCode (-100)` error code and execution flow will jump to the next scenario iteration. By default, NBomber uses 1 second as a step's timeout. You can change it if you want.
 
 <Tabs
   groupId="example"
@@ -1291,17 +1291,17 @@ ScenarioBuilder
     // will create a 5 copies (threads) of the current scenario 
     // and run them concurrently for 10 sec    
     // here every single copy will iterate while the specified duration
-    KeepConstant(copies: 5, during: TimeSpan.FromSeconds(10)), 
+    Simulation.KeepConstant(copies: 5, during: TimeSpan.FromSeconds(10)), 
 
     // will inject 10 new copies (threads) per 1 sec
     // the copies will be injected at regular intervals
     // here every single copy will run only once
-    InjectPerSec(rate: 10, during: TimeSpan.FromSeconds(30)),
+    Simulation.InjectPerSec(rate: 10, during: TimeSpan.FromSeconds(30)),
 
     // will inject a random number of scenario copies (threads) per 1 sec
     // the copies will be injected at regular intervals
     // here every single copy will run only once
-    InjectPerSecRandom(minRate: 5, maxRate: 50, during = TimeSpan.FromMinutes(2))
+    Simulation.InjectPerSecRandom(minRate: 5, maxRate: 50, during: TimeSpan.FromMinutes(2))
 });
 ```
 
