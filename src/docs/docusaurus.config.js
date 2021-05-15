@@ -8,8 +8,7 @@ module.exports = {
   favicon: 'img/nbomber-logo.ico',
   organizationName: 'Pragmatic Flow',
   projectName: 'NBomber',
-  themeConfig: {
-    //disableDarkMode: false,      
+  themeConfig: {    
     disableSwitch: true,
     defaultMode: 'dark',
     respectPrefersColorScheme: true,  
@@ -30,13 +29,7 @@ module.exports = {
           activeBasePath: 'docs',
           label: 'Docs',
           position: 'left',
-        },
-        // {
-        //   to: 'docs/changelog',  
-        //   activeBasePath: 'changelog',
-        //   label: 'Changelog',
-        //   position: 'left'
-        // },         
+        },           
         //{to: 'blog', label: 'Blog', position: 'left'},
         {
           href: 'https://github.com/PragmaticFlow/NBomber',
