@@ -7,28 +7,31 @@ author_image_url: https://avatars.githubusercontent.com/u/1080518
 tags: [nbomber-release, load-testing]
 ---
 
-https://twitter.com/raoldev/status/1389559985068199936
+import TwitterImage from '@site/static/img/blog/nbomber-v2/nbomber_v2_twitter.png';
+import ConsoleImage from '@site/static/img/blog/nbomber-v2/nbomber_v2_console.gif';
 
 Hey folks, we were busy for almost half of the year working on a new big release of NBomber. I am so happy to announce that we finally completed! 
 
-Before we start, I'd like to inform you that you can help our project grow and keep going. 
+In this release, we were focused on improving engine performance, fixing RAM consumption issues, improving UI/UX, including reporting, extending API to provide flexibility but keep it SIMPLE as before.
 
-So now, let's start with updates. In this release, we were focused on fixing RAM consumption issues, improving UI/UX, including reporting, extending API to provide flexibility but keep it simple as before.
+<center><img src={TwitterImage} width="70%" height="70%" /></center>
 
 # UI/UX Improvements
 
 ### Console
 In the previous version, we always had a desire to improve the console output. The main pain point for us was the progress bar, which did not scale well while resizing the console, and sometimes it literally broke down when you are writing log messages to the console. The second most important problem for us was the rendering of tables, which were also displayed crookedly while resizing windows, and we wanted to fix this. We started considering [Spectre.Console](https://github.com/spectreconsole/spectre.console) project for a long time as a good candidate for replacement and then started a smooth transition. It was good with tables, but we still had some problems with the progress bar. Since for logs, we use [Serilog](https://serilog.net/), we figure out that we need to develop a proper integration between Serilog and Spectre.Console to fix our issue. After all, we developed [Serilog.Sinks.SpectreConsole](https://github.com/PragmaticFlow/Serilog.Sinks.SpectreConsole) that nicely integrates Serilog with Spectre.Console. It's open-source, and you can use it for your integrations too. Now our console UI is much more stable, and I hope more beautiful :)
 
+<center><img src={ConsoleImage} width="90%" height="90%" /></center>
+
 ### HTML report
-We use [Vue.js](https://vuejs.org/), which won over us with its simplicity and minimalism for rendering HTML. Compared to the previous version, we have significantly expanded the functionality by adding: fail stats, status codes, hints analyzer results. You can take a look at the new HTML report [here](https://serilog.net/). Also, we switched to use [Google Charts](https://developers-dot-devsite-v2-prod.appspot.com/chart/interactive/docs/gallery) for rendering charts since they free and under Apache 2.0 license.
+We use [Vue.js](https://vuejs.org/), which won over us with its simplicity and minimalism for rendering HTML. Compared to the previous version, we have significantly expanded the functionality by adding: fail stats, status codes, hints analyzer results. You can take a look at the new HTML report <a href="https://nbomber.com/img/blog/nbomber-v2/nbomber_v2_report.html" target="_blank">here</a> Also, we switched to use [Google Charts](https://developers-dot-devsite-v2-prod.appspot.com/chart/interactive/docs/gallery) for rendering charts since it's free and under Apache 2.0 license.
 
 # Runtime Improvements
 
 In this section, we will discuss some internals of NBomber that improve the performance and stability of the system.
 
 ### Stats collecting
-We refactored our stats collecting module to use the actor model via F# [MailboxProcessor](https://fsharpforfunandprofit.com/posts/concurrency-actor-model/) and have one StatsScenarioActor per scenario. Also, we send metrics by batches to eliminate the overload of one actor by many concurrent ScenarioActors that execute steps and send metrics.
+We refactored our stats collecting module to use the actor model via F# [MailboxProcessor](https://fsharpforfunandprofit.com/posts/concurrency-actor-model/) and to have one StatsScenarioActor per scenario. Also, we send metrics by batches to eliminate the overload of one actor by many concurrent ScenarioActors that execute steps and send metrics.
 
 ### Minimizing RAM usage
 
@@ -39,7 +42,7 @@ We refactored our statistics module to fix the issue with memory growing footpri
 Another important thing was introducing default timeout for steps. NBomber v1 did not support any timeouts out of the box, and this task shifted to the shoulders of the developers. For example, the HTTP plugin added its own timeout, which was quite sane. But on the other hand, everyone needs such a basic thing as a timeout, and forcing everyone to implement it is not a good idea. Also, newbies often weren't aware of this, and afterward, it led to the thread pool starvation problem. It especially was visible when testing very slow API using a big request rate, say 2-4K requests per sec from 1 node. It leads to many tasks (.NET Task) was activated, consumed RAM, and never finished but growing. In the new version, each step by default contains a timeout of 1 second and can be changed by the user.
 
 #### Removed uneccesary memory allocations
-We refactored a few places where we did memory extra allocations on every step invocation. For example, StepContext was previously created on every invocation.
+We refactored a few places where we did extra memory allocations on every step invocation. For example, StepContext was previously created on every invocation.
 
 #### Task computation expression
 Internally, we use [FsToolkit.ErrorHandling](https://github.com/demystifyfp/FsToolkit.ErrorHandling) library that provides handy F# computation expressions and corresponding extensions. With the latest updates to this library for work with Task, we have automatically switched to using [Ply](https://github.com/crowded/ply) library, which provides a low overhead Task computation expression.
@@ -366,4 +369,4 @@ let step = Step.create("simple step",
 ```
 
 ### InfluxDb plugin
-InfluxDb plugin is supplemented with tracking fail stats and load simulation value. In Grafana, you can render your load simulation timeline and compare it with what your target system can handle.
+[InfluxDb plugin](https://github.com/PragmaticFlow/NBomber.Sinks.InfluxDB) is supplemented with tracking fail stats and load simulation value. In Grafana, you can render your load simulation timeline and compare it with what your target system can handle.

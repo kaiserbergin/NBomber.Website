@@ -9,7 +9,7 @@ module.exports = {
   organizationName: 'Pragmatic Flow',
   projectName: 'NBomber',
   themeConfig: {
-    //disableDarkMode: false,  
+    //disableDarkMode: false,      
     disableSwitch: true,
     defaultMode: 'dark',
     respectPrefersColorScheme: true,  
@@ -97,7 +97,7 @@ module.exports = {
       //     ],
       //   },
       // ],
-      copyright: `Copyright © ${new Date().getFullYear()} Pragmatic Flow`,
+      copyright: `Copyright © ${new Date().getFullYear()} NBomber`,
     },
     prism: {
       theme: require('prism-react-renderer/themes/dracula'),
