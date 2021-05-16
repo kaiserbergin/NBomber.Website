@@ -36,7 +36,7 @@ We refactored our stats collecting module to use the actor model via F# [Mailbox
 ### Minimizing RAM usage
 
 #### Compression of stats results
-We refactored our statistics module to fix the issue with memory growing footprint for long-running tests. Now you can run tests that will work for years and have a stable (usually small) memory footprint. This is achieved essentially due to one important optimization: all results live in memory but decomposed into buckets with the same or very similar results. Each such bucket has its own counter, which is monotonically growing. Due to this optimization, we got quite effective compression. Aside from this, such optimizations are often used in time-series databases where many metrics of the same value or very similar can arrive at one point in time.
+We refactored our statistics module to fix the issue with memory growing footprint for long-running tests. Now you can run tests that will work for years and have a stable (usually small) memory footprint. This is achieved essentially due to one important optimization: all results are located in memory but decomposed into buckets with the same or very similar results. Each such bucket has its own counter, which is monotonically growing. Due to this optimization, we got quite effective compression. Aside from this, such optimizations are often used in time-series databases where many metrics of the same value or very similar can arrive at one point in time.
 
 #### Default step timeout
 Another important thing was introducing default timeout for steps. NBomber v1 did not support any timeouts out of the box, and this task shifted to the shoulders of the developers. For example, the HTTP plugin added its own timeout, which was quite sane. But on the other hand, everyone needs such a basic thing as a timeout, and forcing everyone to implement it is not a good idea. Also, newbies often weren't aware of this, and afterward, it led to the thread pool starvation problem. It especially was visible when testing very slow API using a big request rate, say 2-4K requests per sec from 1 node. It leads to many tasks (.NET Task) was activated, consumed RAM, and never finished but growing. In the new version, each step by default contains a timeout of 1 second and can be changed by the user.
@@ -154,7 +154,7 @@ test <@ mb (step1.Ok.DataTransfer.MinBytes) <= 50.0 @>
 ```
 
 ## Hint Analyzer
-In this release, we have integrated a new HintAnalyzer feature that allows the analysis of the results of statistics and, based on this, displays hints. HintAnalyzer may refer not only to the statistics data but also to the use of certain plugins. Any NBomber plugin can add new analyzers. For example, PingPlugin pings the target host before starting any test, and after that, it analyzes received results and prints hints.
+In this release, we have integrated a new HintAnalyzer feature that allows to analise the results of statistics and, based on this, displays hints. HintAnalyzer may refer not only to the statistics data but also to the use of certain plugins. Any NBomber plugin can add new analyzers. For example, PingPlugin pings the target host before starting any test, and after that, it analyzes received results and prints hints.
 
 > plugin stats: `NBomber.Plugins.Network.PingPlugin`
 
@@ -348,7 +348,7 @@ In the new version, we write a log file to the current session folder.
 ```
 
 ### HTTP plugin
-[NBomber.Http](https://github.com/PragmaticFlow/NBomber.Http) has been slightly modified to make it easier to use. In the previous version, this plugin provided an HttpStep wrapper over the standard Step that hides many details and adds some extra magic. In the new version, we have reworked the approach with DSL plugins to use standard NBomber abstractions instead of creating new ones. Now, the HTTP plugin contains HttpClientFactory and has an HTTP module with functions for building HTTP requests.
+[NBomber.Http](https://github.com/PragmaticFlow/NBomber.Http) has been slightly modified to make it easier to be used. In the previous version, this plugin provided an HttpStep wrapper over the standard Step that hid many details and added extra magic. In the new version, we have reworked the approach with DSL plugins to use standard NBomber abstractions instead of creating new ones. Now, the HTTP plugin contains HttpClientFactory and has an HTTP module with functions for building HTTP requests.
 
 ```fsharp
 let httpFactory = HttpClientFactory.create()
