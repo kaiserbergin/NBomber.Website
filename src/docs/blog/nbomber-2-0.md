@@ -10,21 +10,21 @@ tags: [nbomber-release, load-testing]
 import TwitterImage from '@site/static/img/blog/nbomber-v2/nbomber_v2_twitter.png';
 import ConsoleImage from '@site/static/img/blog/nbomber-v2/nbomber_v2_console.gif';
 
-Hey folks, we were busy for almost half of the year working on a new big release of NBomber. I am so happy to announce that we finally completed! 
+Hey folks, we were busy for nearly half a year working on a new big release of NBomber. I am so happy to announce that we finally completed it!
 
-In this release, we were focused on improving engine performance, fixing RAM consumption issues, improving UI/UX, including reporting, extending API to provide flexibility but keep it SIMPLE as before.
+In this release, we focused on improving engine performance, fixing RAM consumption issues, improving UI/UX, including reporting, extending API to provide flexibility but keep it SIMPLE as before.
 
 <center><img src={TwitterImage} width="70%" height="70%" /></center>
 
 # UI/UX Improvements
 
 ### Console
-In the previous version, we always had a desire to improve the console output. The main pain point for us was the progress bar, which did not scale well while resizing the console, and sometimes it literally broke down when you are writing log messages to the console. The second most important problem for us was the rendering of tables, which were also displayed crookedly while resizing windows, and we wanted to fix this. We started considering [Spectre.Console](https://github.com/spectreconsole/spectre.console) project for a long time as a good candidate for replacement and then started a smooth transition. It was good with tables, but we still had some problems with the progress bar. Since for logs, we use [Serilog](https://serilog.net/), we figure out that we need to develop a proper integration between Serilog and Spectre.Console to fix our issue. After all, we developed [Serilog.Sinks.SpectreConsole](https://github.com/PragmaticFlow/Serilog.Sinks.SpectreConsole) that nicely integrates Serilog with Spectre.Console. It's open-source, and you can use it for your integrations too. Now our console UI is much more stable, and I hope more beautiful :)
+In the previous version, we always had a desire to improve the console output. The main pain point for us was the progress bar, which did not scale well while resizing the console, and sometimes it literally broke down when you are writing log messages to the console. The second most important problem for us was the table rendering, which was also displayed crookedly while resizing windows, and we wanted to fix this. We started considering [Spectre.Console](https://github.com/spectreconsole/spectre.console) project for a long time as a good candidate for replacement and then we started a smooth transition. It was good with tables, but we still had some problems with the progress bar. Since for logs, we use [Serilog](https://serilog.net/), we figure out that we need to develop a proper integration between Serilog and Spectre.Console to fix our issue. After all, we developed [Serilog.Sinks.SpectreConsole](https://github.com/PragmaticFlow/Serilog.Sinks.SpectreConsole) that nicely integrates Serilog with Spectre.Console. It's open-source, and you can use it for your integrations too. Now our console UI is much more stable, and I hope more beautiful :)
 
 <center><img src={ConsoleImage} width="90%" height="90%" /></center>
 
 ### HTML report
-We use [Vue.js](https://vuejs.org/), which won over us with its simplicity and minimalism for rendering HTML. Compared to the previous version, we have significantly expanded the functionality by adding: fail stats, status codes, hints analyzer results. You can take a look at the new HTML report <a href="https://nbomber.com/img/blog/nbomber-v2/nbomber_v2_report.html" target="_blank">here</a> Also, we switched to use [Google Charts](https://developers-dot-devsite-v2-prod.appspot.com/chart/interactive/docs/gallery) for rendering charts since it's free and under Apache 2.0 license.
+We use [Vue.js](https://vuejs.org/), which amazed us with its simplicity and minimalism for rendering HTML. Compared to the previous version, we have significantly expanded the functionality by adding: fail stats, status codes, hints analyzer results. You can take a look at the new HTML report <a href="https://nbomber.com/img/blog/nbomber-v2/nbomber_v2_report.html" target="_blank">here</a> Also, we switched to [Google Charts](https://developers-dot-devsite-v2-prod.appspot.com/chart/interactive/docs/gallery) for rendering charts since it's free and under Apache 2.0 license.
 
 # Runtime Improvements
 
@@ -174,7 +174,7 @@ Also, HintAnalyzer can suggest some other hints related to the usage of NBomber.
 |---|---|---|
 |Scenario|simple_http|Step 'fetch_html_page' in scenario 'simple_http' didn't track data transfer. In order to track data transfer, you should use Response.Ok(sizeInBytes: value)|
 
-If you want, you can disable HintAnalyzer
+You can disable HintAnalyzer if you want
 
 ```fsharp {3}
 Scenario.create "simple_http" [step]
@@ -286,7 +286,7 @@ minutes 1
 ```
 
 ### Init-only scenarios
-NBomber in the very first version had the ability to provide Scenario initialization via *Scenario.init*. Still, it had a mandatory restriction to create a Scenario you should provide at least one Step.
+NBomber had the ability to provide Scenario initialization via *Scenario.init* in the very first version. It had a mandatory restriction to create a Scenario you should provide at least one Step.
 
 ```fsharp
 // you should provide at least one step
