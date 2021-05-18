@@ -64,7 +64,7 @@ And also, for the project settings, we apply:
 ``` 
 
 # New Statistics
-One of the major changes we have been working on is the statistics module. Initially, we didn't really want to change it, but using NBomber v1 in production, we often ran into bottlenecks or questions regarding providing advanced statistics.
+One of the major changes we had been working on is the statistics module. Initially, we didn't really want to change it, but using NBomber v1 in production, we often ran into bottlenecks or questions regarding providing advanced statistics.
 
 ### Ok and Fail stats
 An important addition to the previous statistics was that we started tracking the fail stats with the full scope, including data transfer for fails, latency, and percentiles.
