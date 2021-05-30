@@ -1,0 +1,124 @@
+---
+title: Convert Your Integration Tests To Load Tests
+author: Anton Moldovan (@AntyaDev)
+author_title: NBomber Core Team
+author_url: https://github.com/AntyaDev
+author_image_url: https://avatars.githubusercontent.com/u/1080518
+tags: [nbomber-http, load-testing]
+---
+
+In this article, I want to cover the topic of how you can effectively reuse your integration tests and convert them into load tests to speed up your load test adoption. 
+
+> This article will be useful for developers who use the .NET platform to write integration tests that cover HTTP API, microservices.
+
+## Load testing adoption
+
+Nowadays, it is already difficult to find a project that does not use integration tests, especially in the case of building microservices or distributed systems, etc. In addition to this, some companies are starting the adoption of load testing and applying it as a must-have quality attribute. Honestly, load tests are still kind of exotic practice for most web projects, and usually, folks become consider them a bit late. One of the main reasons is that the load tests require additional development and maintenance. It would be awesome to shorten the required time by converting our integration tests into load tests.
+
+## Converting integration tests to load tests
+
+Let's take a look at a simple integration test where a user tries to log in and buy a product. 
+
+```fsharp
+[<Fact>]
+let ``logged user should be able to by product`` () = async {
+
+    let productId = "productId"
+    let userName = "userName"
+    let password = "password"
+    
+    use httpClient = new HttpClient()
+
+    // Async<HttpResponseMessage>
+    let! loginResponse = httpClient |> UserOperations.login userName password
+
+    // string
+    let jwtToken = loginResponse |> parseJwtToken |> Result.getOk
+
+    // Async<HttpResponseMessage>
+    let! paymentResponse = httpClient |> UserOperations.buyProduct productId jwtToken
+
+    // Result<Payment,AppError>
+    let paymentResult = paymentResponse |> parsePaymentResult
+
+    test <@ Result.isOk paymentResult @>
+}
+```
+
+To reuse integration tests logic and afterward convert it to load tests, we need:
+
+- Separate all business operations into a separate module.
+- Update the integration test logic so that it contains only business operations module and assertions.
+
+### Separate all business operations
+
+Separate all business operations (log in, buy product) into a separate module and make sure that each operation returns [HttpResponseMessage](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpresponsemessage?view=net-5.0). As you may have noticed, all of our custom operations are contained in a single UserOperations module, and each of its functions returns a standard HttpResponseMessage. 
+
+```fsharp
+module UserOperations
+
+let login: string -> string -> HttpClient -> Async<HttpResponseMessage>
+
+let buyProduct: string -> string -> HttpClient -> Async<HttpResponseMessage>
+```
+
+HttpResponseMessage is a well-suported type in .NET and a key thing here is that [NBomber.Http](https://github.com/PragmaticFlow/NBomber.Http) contains a [helper function](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/FSharp.fs#L24) that converts HttpResponseMessage to NBomber's Response type, and you can reuse such operations in your load tests. For C#, it works via [extension method](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/CSharp.fs#L44).
+
+
+```fsharp
+module Response
+
+let ofHttp: HttpResponseMessage -> Response
+```
+
+### Update the integration test logic
+
+Update the integration test logic so that it contains only business operations module and assertions. This is key point of integration test portability. 
+
+```
+IntegrationTest = BusinessOperations + Assertions
+LoadTest        = BusinessOperations + Assertions
+```
+
+Now let's see the final example of converting an integration test into a load test.
+
+```fsharp
+[<Fact>]
+let ``load test operation - buy a product`` () = 
+
+    let productId = "productId"
+    let userName = "userName"
+    let password = "password"
+    
+    use httpClient = new HttpClient()
+
+    let login = Step.create("login_step", fun context -> task {
+
+        let! loginResponse = httpClient |> UserOperations.login userName password        
+        return Response.ofHttp(loginResponse)
+    })
+
+    let buyProduct = Step.create("buy_product", fun context -> task {
+
+        let loginResponse = context.GetPreviousStepResponse<HttpResponseMessage>()
+        let jwtToken      = loginResponse |> parseJwtToken |> Result.getOk        
+        
+        let! paymentResponse = httpClient |> UserOperations.buyProduct productId jwtToken        
+        
+        return Response.ofHttp(paymentResponse)
+    })
+
+    Scenario.create "buy_product_scenario" [login; buyProduct]
+    |> Scenario.withLoadSimulations [InjectPerSec(rate = 100, during = minutes 5)]
+    |> NBomberRunner.registerScenario
+    |> NBomberRunner.run
+    |> ignore
+
+    // here you can apply your assertions based on received stats
+```
+
+For a more realistic load test, you can leverage the power of the [DataFeed](https://nbomber.com/docs/general-concepts#datafeed) and the [ClientFactory](https://nbomber.com/docs/general-concepts#clientfactory). With these abstractions, you will be able to inject test data, configure your HttpClient, and so on.
+
+## Conclusion
+
+If you decide to start writing load tests and use a code-first framework like NBomber, I advise you to choose a framework more meticulously. The ability to convert integration tests into load tests can significantly reduce your time and be crucial. Also, I don't want to seem like a salesperson to you, so I want to dispel myths right away: This technique cannot completely replace writing your own load tests since you definitely will have some particular cases that require writing more advanced scenarios. But even though if you can reduce half of your time, it will be very worth it.
