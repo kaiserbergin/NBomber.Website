@@ -45,12 +45,9 @@ let ``logged user should be able to by product`` () = async {
 }
 ```
 
-To reuse integration tests logic and afterward convert it to load tests, we need:
+To reuse integration tests logic and afterward convert it to load tests, we need to separate all business operations from test assertions into a separate module. After this, we can reuse the same business operation for load test and integration test.
 
-- Separate all business operations into a separate module.
-- Update the integration test logic so that it contains only business operations module and assertions.
-
-### Separate all business operations
+### Separation of business operations from test assertions
 
 Separate all business operations (log in, buy product) into a separate module and make sure that each operation returns [HttpResponseMessage](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpresponsemessage?view=net-5.0). As you may have noticed, all of our custom operations are contained in a single UserOperations module, and each of its functions returns a standard HttpResponseMessage. 
 
@@ -71,7 +68,7 @@ module Response
 let ofHttp: HttpResponseMessage -> Response
 ```
 
-### Update the integration test logic
+### Adaptation of integration and load tests
 
 Update the integration test logic so that it contains only business operations module and assertions. This is key point of integration test portability. 
 
