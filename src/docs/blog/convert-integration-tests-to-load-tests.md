@@ -17,7 +17,7 @@ Nowadays, it is already difficult to find a project that does not use integratio
 
 ## Converting integration tests to load tests
 
-Let's take a look at a simple integration test where a user tries to log in and buy a product. 
+Let's take a look at a simple integration test where a user tries to log in and buy a product. This test example is already a bit prepared for conversion to load test. 
 
 ```fsharp
 [<Fact>]
@@ -45,11 +45,16 @@ let ``logged user should be able to by product`` () = async {
 }
 ```
 
-To reuse integration tests logic and afterward convert it to load tests, we need to separate all business operations from test assertions into a separate module. After this, we can reuse the same business operation for load test and integration test.
+To convert integration tests to load tests, we need to separate all business operations from test assertions into a separate module. After this, we can use the same business operation for load test and integration test. The main idea can be described as the following expression.
 
-### Separation of business operations from test assertions
+```
+IntegrationTest = BusinessOperations + Assertions
+LoadTest        = BusinessOperations + Assertions
+```
 
-Separate all business operations (log in, buy product) into a separate module and make sure that each operation returns [HttpResponseMessage](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpresponsemessage?view=net-5.0). As you may have noticed, all of our custom operations are contained in a single UserOperations module, and each of its functions returns a standard HttpResponseMessage. 
+### Business operations module
+
+The business operations module represents such operations as login, buy products. 
 
 ```fsharp
 module UserOperations
@@ -59,8 +64,11 @@ let login: string -> string -> HttpClient -> Async<HttpResponseMessage>
 let buyProduct: string -> string -> HttpClient -> Async<HttpResponseMessage>
 ```
 
-HttpResponseMessage is a well-suported type in .NET and a key thing here is that [NBomber.Http](https://github.com/PragmaticFlow/NBomber.Http) contains a [helper function](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/FSharp.fs#L24) that converts HttpResponseMessage to NBomber's Response type, and you can reuse such operations in your load tests. For C#, it works via [extension method](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/CSharp.fs#L44).
+As you may have noticed, all these operations are contained in a single UserOperations module, and each of its functions returns a standard [HttpResponseMessage](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpresponsemessage?view=net-5.0). 
 
+### NBomber response type
+
+HttpResponseMessage is a well-suported type in .NET and a key thing here is that [NBomber.Http](https://github.com/PragmaticFlow/NBomber.Http) contains a [helper function](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/FSharp.fs#L24) that converts HttpResponseMessage to NBomber's Response type, and you can reuse such operations in your load tests. For C#, it works via [extension method](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/CSharp.fs#L44).
 
 ```fsharp
 module Response
@@ -68,14 +76,7 @@ module Response
 let ofHttp: HttpResponseMessage -> Response
 ```
 
-### Adaptation of integration and load tests
-
-Update the integration test logic so that it contains only business operations module and assertions. This is key point of integration test portability. 
-
-```
-IntegrationTest = BusinessOperations + Assertions
-LoadTest        = BusinessOperations + Assertions
-```
+### Load test
 
 Now let's see the final example of converting an integration test into a load test.
 
