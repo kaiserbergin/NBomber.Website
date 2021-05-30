@@ -64,11 +64,11 @@ let login: string -> string -> HttpClient -> Async<HttpResponseMessage>
 let buyProduct: string -> string -> HttpClient -> Async<HttpResponseMessage>
 ```
 
-As you may have noticed, all these operations are contained in a single UserOperations module, and each of its functions returns a standard [HttpResponseMessage](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpresponsemessage?view=net-5.0). 
+As you may have noticed, all these operations are contained in a single UserOperations module, and each of its functions returns a standard HttpResponseMessage. 
 
 ### NBomber response type
 
-HttpResponseMessage is a well-suported type in .NET and a key thing here is that [NBomber.Http](https://github.com/PragmaticFlow/NBomber.Http) contains a [helper function](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/FSharp.fs#L24) that converts HttpResponseMessage to NBomber's Response type, and you can reuse such operations in your load tests. For C#, it works via [extension method](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/CSharp.fs#L44).
+[HttpResponseMessage](https://docs.microsoft.com/en-us/dotnet/api/system.net.http.httpresponsemessage?view=net-5.0) is a well-suported type in .NET and a key thing here is that [NBomber.Http](https://github.com/PragmaticFlow/NBomber.Http) contains a [helper function](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/FSharp.fs#L24) that converts HttpResponseMessage to NBomber's [Response](https://github.com/PragmaticFlow/NBomber/blob/dev/src/NBomber/Contracts/Contracts.fs#L17) type, and you can reuse such operations in your load tests. For C#, it works via [extension method](https://github.com/PragmaticFlow/NBomber.Http/blob/dev/src/NBomber.Http/Api/CSharp.fs#L44).
 
 ```fsharp
 module Response
