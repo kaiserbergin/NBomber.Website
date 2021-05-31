@@ -7,13 +7,13 @@ author_image_url: https://avatars.githubusercontent.com/u/1080518
 tags: [nbomber-http, load-testing]
 ---
 
-In this article, I want to cover the topic of how you can effectively reuse your integration tests and convert them into load tests to speed up your load test adoption. 
+In this article, I want to cover the topic of how you can effectively reuse your integration tests and convert them to load tests to speed up your load test adoption. 
 
-> This article will be useful for developers who use the .NET platform to write integration tests that cover HTTP API, microservices.
+> This article will be useful for developers who use .NET platform to write integration tests that cover HTTP API, microservices.
 
 ## Load testing adoption
 
-Nowadays, it is difficult to find a project that does not use integration tests, especially in building microservices or distributed systems, etc. In addition to this, some companies start adopting load testing and applying it as a must-have quality attribute. Honestly, load tests are still kind of exotic practice for most web projects, and usually, folks consider them a bit late. One of the main reasons is that the load tests require additional development and maintenance. It would be awesome to reduce time by converting our integration tests into load tests.
+Nowadays, it is difficult to find a project that does not use integration tests, especially in building microservices or distributed systems, etc. In addition to this, some companies start adopting load testing and applying it as a must-have quality attribute. Honestly, load tests are still kind of exotic practice for most web projects, and usually, folks consider them a bit late. One of the main reasons is that the load tests require additional development and maintenance. It would be awesome to reduce time by converting our integration tests to load tests.
 
 ## Converting integration tests to load tests
 
@@ -45,7 +45,7 @@ let ``logged user should be able to by product`` () = async {
 }
 ```
 
-To convert integration tests to load tests, we need to separate all business operations from test assertions into a separate module. After this, we can use the same business operation for load test and integration test. The main idea can be described as the following expression.
+To convert integration tests to load tests, we need to separate all business operations from test assertions to a separate module. After this, we can use the same business operation for load test and integration test. The main idea can be described as the following expression.
 
 ```
 IntegrationTest = BusinessOperations + Assertions
@@ -78,7 +78,7 @@ let ofHttp: HttpResponseMessage -> Response
 
 ### Load test
 
-Now let's see the final example of converting an integration test into a load test.
+Now let's see the final example of converting an integration test to a load test.
 
 ```fsharp
 [<Fact>]
@@ -119,4 +119,4 @@ For a more realistic load test, you can leverage the power of the [DataFeed](htt
 
 ## Conclusion
 
-The ability to convert integration tests into load tests can significantly reduce your time and be crucial. Also, I don't want to seem like a salesperson to you, so I want to dispel myths right away: this technique cannot completely replace writing your own load tests since you definitely will have some particular cases that require writing more advanced scenarios. But even though if you can reduce half of your time, it really worth trying.
+The ability to convert integration tests to load tests can significantly reduce your time on developing load tests. Also, I don't want to seem like a salesperson to you, so I want to dispel myths right away: this technique cannot completely replace writing your own load tests since you definitely will have some particular cases that require writing more advanced scenarios.
