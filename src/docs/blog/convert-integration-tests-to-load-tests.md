@@ -13,7 +13,7 @@ In this article, I want to cover the topic of how you can effectively reuse your
 
 ## Load testing adoption
 
-Nowadays, it is already difficult to find a project that does not use integration tests, especially in the case of building microservices or distributed systems, etc. In addition to this, some companies are starting the adoption of load testing and applying it as a must-have quality attribute. Honestly, load tests are still kind of exotic practice for most web projects, and usually, folks become consider them a bit late. One of the main reasons is that the load tests require additional development and maintenance. It would be awesome to shorten the required time by converting our integration tests into load tests.
+Nowadays, it is difficult to find a project that does not use integration tests, especially in building microservices or distributed systems, etc. In addition to this, some companies start adopting load testing and applying it as a must-have quality attribute. Honestly, load tests are still kind of exotic practice for most web projects, and usually, folks consider them a bit late. One of the main reasons is that the load tests require additional development and maintenance. It would be awesome to reduce time by converting our integration tests into load tests.
 
 ## Converting integration tests to load tests
 
