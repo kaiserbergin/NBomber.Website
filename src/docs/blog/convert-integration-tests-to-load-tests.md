@@ -119,4 +119,4 @@ For a more realistic load test, you can leverage the power of the [DataFeed](htt
 
 ## Conclusion
 
-If you decide to start writing load tests and use a code-first framework like NBomber, I advise you to choose a framework more meticulously. The ability to convert integration tests into load tests can significantly reduce your time and be crucial. Also, I don't want to seem like a salesperson to you, so I want to dispel myths right away: This technique cannot completely replace writing your own load tests since you definitely will have some particular cases that require writing more advanced scenarios. But even though if you can reduce half of your time, it will be very worth it.
+The ability to convert integration tests into load tests can significantly reduce your time and be crucial. Also, I don't want to seem like a salesperson to you, so I want to dispel myths right away: this technique cannot completely replace writing your own load tests since you definitely will have some particular cases that require writing more advanced scenarios. But even though if you can reduce half of your time, it really worth trying.
