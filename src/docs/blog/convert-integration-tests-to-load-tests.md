@@ -9,7 +9,7 @@ tags: [nbomber-http, load-testing]
 
 In this article, I want to cover the topic of how you can effectively reuse your integration tests and convert them to load tests to speed up your load test adoption. 
 
-> This article will be useful for developers who use .NET platform to write integration tests that cover HTTP API, microservices.
+> This article will be useful for developers who use .NET platform to write integration tests that cover HTTP API and microservices.
 
 ## Load testing adoption
 
@@ -115,7 +115,7 @@ let ``load test operation - buy a product`` () =
     // here you can apply your assertions based on received stats
 ```
 
-For a more realistic load test, you can leverage the power of the [DataFeed](https://nbomber.com/docs/general-concepts#datafeed) and the [ClientFactory](https://nbomber.com/docs/general-concepts#clientfactory). With these abstractions, you will be able to inject test data, configure your HttpClient, and so on.
+For a more realistic load test, you can leverage the power of the [DataFeed](https://nbomber.com/docs/general-concepts#datafeed) and the [ClientFactory](https://nbomber.com/docs/general-concepts#clientfactory). With these abstractions, you will be able to inject test data, configure your HttpClient etc.
 
 ## Conclusion
 
