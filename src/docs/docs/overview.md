@@ -161,7 +161,7 @@ dotnet run -c Release
 
 After running a test you will get a report. Don't get scared, we can skip it for now. Later we will understand how to analyse such reports.
 
-### Create simple HTTP load test (not pruduction-ready)
+### Create simple HTTP load test (not production-ready)
 
 Now, let's add HTTP client to test a web server and then run it. 
 
