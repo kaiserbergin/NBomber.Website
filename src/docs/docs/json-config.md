@@ -7,9 +7,175 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 
 This document will help you learn about configuring NBomber tests via configuration files.
+NBomber supports two types of configuration: load tests configuration and infrastructure configuration.
+
+Load tests configuration allows you to set up:
+- load test settings (test suite, test name)
+- target scenarios
+- scenario settings
+- - warming up
+- - load simulations
+- - client factory
+- - custom settings
+- reporting
+- - report file name
+- - report folder
+- - report formats
+- - send statistic interval
+- hint analyzer
+
+Let's consider how a configuration file looks like and how to load it in NBomber:
+
+<Tabs
+  groupId="config"
+  defaultValue="JSON"
+  values={[
+    {label: 'JSON', value: 'JSON'},
+    {label: 'C#', value: 'C#'},
+    {label: 'F#', value: 'F#'}   
+  ]
+}>
+
+<TabItem value="JSON">
+
+```json title="config.json"
+{
+    "TestSuite": "json_config",
+    "TestName": "json_config_example",
+
+    "TargetScenarios": ["rest_api"],
+
+    "GlobalSettings": {
+        "ScenariosSettings": [
+            {
+                "ScenarioName": "rest_api",
+                "WarmUpDuration": "00:00:05",
+
+                "LoadSimulationsSettings": [
+                    { "InjectPerSec": [100, "00:00:15"] },
+                    { "InjectPerSec": [200, "00:00:15"] }
+                ],
+
+                "ClientFactorySettings": [
+                    { "FactoryName": "http_factory", "ClientCount": 2 }
+                ],
+
+                "CustomSettings": {
+                    "BaseUri": "https://jsonplaceholder.typicode.com"
+                }
+            }
+        ],
+
+        "ReportFileName": "my_report_name",
+        "ReportFolder": "./my_reports",
+        "ReportFormats": [ "Html", "Md", "Txt", "Csv" ],
+        "SendStatsInterval": "00:00:05",
+
+        "UseHintsAnalyzer": true
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="C#">
+
+```csharp title="Program.cs"
+NBomberRunner
+    .LoadConfig("config.json")
+```
+
+</TabItem>
+
+<TabItem value="F#">
+
+```fsharp title="Program.fs"
+NBomberRunner.loadConfig "config.json"
+```
+
+</TabItem>
+
+</Tabs>
+
+Infrastructure configuration allows you to set up:
+- Serilog logger
+- worker plugins
+- reporting sinks
+
+The following is an example of such a configuration:
+
+<Tabs
+  groupId="infra-config"
+  defaultValue="JSON"
+  values={[
+    {label: 'JSON', value: 'JSON'},
+    {label: 'C#', value: 'C#'},
+    {label: 'F#', value: 'F#'}   
+  ]
+}>
+
+<TabItem value="JSON">
+
+```json title="config.json"
+{
+    "Serilog": {
+        "WriteTo": [{
+            "Name": "Elasticsearch",
+            "Args": {
+                "nodeUris": "http://localhost:9200",
+                "indexFormat": "nbomber-index-{0:yyyy.MM}"
+            }
+        }]
+    },
+
+    "PingPlugin": {
+        "Hosts": ["jsonplaceholder.typicode.com"],
+        "BufferSizeBytes": 32,
+        "Ttl": 128,
+        "DontFragment": false,
+        "Timeout": 1000
+    },
+
+    "CustomPlugin": {
+        "Message": "Plugin is configured via infra config"
+    },
+
+    "InfluxDBSink": {
+        "Url": "http://localhost:8086",
+        "Database": "default"
+    },
+
+    "CustomReportingSink": {
+        "Message": "Reporting sink is configured via infra config"
+    }
+}
+```
+
+</TabItem>
+
+<TabItem value="C#">
+
+```csharp title="Program.cs"
+NBomberRunner
+    .LoadInfraConfig("infra-config.json")
+```
+
+</TabItem>
+
+<TabItem value="F#">
+
+```fsharp title="Program.fs"
+NBomberRunner.loadInfraConfig "infra-config.json"
+```
+
+</TabItem>
+
+</Tabs>
 
 Please refer to the following links to see the full example:
-[C#](https://github.com/PragmaticFlow/NBomber/blob/main/examples/CSharpProd), [F#](https://github.com/PragmaticFlow/NBomber/blob/main/examples/FSharpProd).
+[C#](https://github.com/PragmaticFlow/NBomber/tree/dev/examples/CSharpProd/JsonConfig), [F#](https://github.com/PragmaticFlow/NBomber/tree/dev/examples/FSharpProd/JsonConfig).
+
+Let's consider load test and infrastructure configuration in details.
 
 ### NBomber load test configuration
 
