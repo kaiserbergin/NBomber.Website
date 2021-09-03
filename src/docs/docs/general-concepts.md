@@ -59,7 +59,7 @@ var scenario = ScenarioBuilder.CreateScenario("test_scenario", login, home, prod
 </TabItem>
 </Tabs>
 
-The thing is that NBomber is measuring the execution time of each step to record the latency (request and response time). Here is a pseudocode example where you can see how NBromber is executing steps.
+The thing is that NBomber is measuring the execution time of each step to record the latency (request and response time). Here is a pseudocode example where you can see how NBomber is executing steps.
 
 <Tabs
   groupId="example"
@@ -603,7 +603,7 @@ let scenario = Scenario.create "scenario" [login; home]
 <TabItem value="C#">
 
 ```csharp
-ar login = Step.Create("login", async context =>
+var login = Step.Create("login", async context =>
 {    
     await Task.Delay(TimeSpan.FromSeconds(1));    
     
@@ -808,7 +808,7 @@ var step = Step.Create("step", async context =>
     context.Client                                            
 
     // returns response from previous step
-    context.GetPreviousStepResponse<'T>()       
+    context.GetPreviousStepResponse<T>()       
     
     // stops scenario by scenario name
     context.StopScenario(scenarioName, reason) 
@@ -957,7 +957,7 @@ let scenario = Scenario.create "scenario" [step]
 // here we define user data record.
 public class UserData
 {   
-    public int UserName { get; set; }
+    public string UserName { get; set; }
     public string Password { get; set; }
 }
 
@@ -1650,10 +1650,6 @@ ScenarioBuilder
 </TabItem>
 </Tabs>
 
-### Scenario configuration
-
-You can read more about configuration on this [page](configuration)
-
 ## NBomberRunner
 
 NBomberRunner is responsible for registering and running scenarios under [Test Suite](https://en.wikipedia.org/wiki/Test_suite). Also it provides configuration points related to infrastructure, reporting, loading plugins. 
@@ -1835,6 +1831,8 @@ You can read more about realtime reporting on this [page](reporting-overview)
 
 ### Load configuration file
 
+You can read more about JSON configuration on this [page](json-config).
+
 <Tabs
   groupId="example"
   defaultValue="F#"
@@ -1904,5 +1902,3 @@ class Program
 
 </TabItem>
 </Tabs>
-
-You can read more about dynamic configuration on this [page](configuration)
