@@ -67,7 +67,7 @@ In order to load such config into NBomber test, you should use `NBomberRunner.lo
 <TabItem value="F#">
 
 ```fsharp
-NBomberRunner.loadConfig "load_test_config.json"
+NBomberRunner.loadConfig "config.json"
 ```
 
 </TabItem>
@@ -75,7 +75,7 @@ NBomberRunner.loadConfig "load_test_config.json"
 <TabItem value="C#">
 
 ```csharp
-NBomberRunner.LoadConfig("load_test_config.json")
+NBomberRunner.LoadConfig("config.json")
 ```
 
 </TabItem>
