@@ -11,7 +11,7 @@ NBomber supports two types of configuration:
 
 - [Load Test Configuration](#load-test-configuration) - it allows you to set or override settings related to your load test: [TestNameSettings](#test-name-settings), [TargetScenarioSettings](#target-scenario-settings), [ScenariosSettings](#scenarios-settings), [ClietFactorySettings](#client-factory-settings), [ReportingSettings](#reporting-settings). Also you can inject user-defined [CustomSettings](#custom-settings) (represented as JSON object) into your test. 
 
-- [Infrastructure Configuration](#infrastructure-configuration) - it allows you to set or ovverride settings related to infrastracture: plugins and reporting sinks. For example: Serilog logger, InfluxDb reporting sink, Ping plugin, etc. 
+- [Infrastructure Configuration](#infrastructure-configuration) - it allows you to set or override settings related to infrastracture: plugins and reporting sinks. For example: Serilog logger, InfluxDb reporting sink, Ping plugin, etc. 
 
 :::note
 
@@ -166,7 +166,7 @@ NBomberRunner.RegisterScenarios(insert_mongo, read_mongo, update_mongo);
 </TabItem>
 </Tabs>
 
-And for one test you want to run the only `insert_mongo` but for the second one `read_mongo` and `update_mongo` together. You can achive this by using TargetScenario setting. One file will contain the only `insert_mongo` scenario.
+And for one test you want to run the only `insert_mongo` but for the second one `read_mongo` and `update_mongo` together. You can achive this by using TargetScenario setting. One file will contain only `insert_mongo` scenario.
 
 
 ```json title="target_scenario_1.json"
@@ -473,7 +473,7 @@ public class CustomScenarioSettings
 </TabItem>
 </Tabs>
 
-After this, we should add a handler on [ScenarioInit](general-concepts#scenario-init) to fetch `CustomSettings` related to a specific scenario. Finally, `CustomSettings` will be fetched via [ScenarioContext.CustomSettings](general-concepts#scenario-context).
+After this, we should add a handler on [ScenarioInit](general-concepts#scenario-init) to fetch `CustomSettings` related to a specific scenario. Finally, `CustomSettings` is fetched via [ScenarioContext.CustomSettings](general-concepts#scenario-context).
 
 <Tabs
   groupId="example"
