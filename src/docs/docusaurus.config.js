@@ -37,6 +37,11 @@ module.exports = {
           position: 'left',
         },
         {
+          href: 'https://gitter.im/nbomber/community',
+          label: 'Chat',
+          position: 'left'
+        },
+        {
           href: 'https://github.com/PragmaticFlow/NBomber/tree/dev/examples',
           label: 'Examples',
           position: 'left'

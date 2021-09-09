@@ -60,7 +60,7 @@ dotnet add package NBomber
 
 ### Create hello world load test
 
-Let's fist start with an empty hello world example to get more familiar with NBomber. In this example, we will define one simple Step and Scenario which does nothing.
+Let's first start with an empty hello world example to get more familiar with NBomber. In this example, we will define one simple Step and Scenario which does nothing.
 
 <Tabs
   groupId="example"
@@ -78,6 +78,7 @@ open System.Threading.Tasks
 
 open FSharp.Control.Tasks.NonAffine
 
+open NBomber
 open NBomber.Contracts
 open NBomber.FSharp
 
@@ -119,6 +120,8 @@ let main argv =
 ```csharp title="Program.cs"
 using System;
 using System.Threading.Tasks;
+
+using NBomber;
 using NBomber.Contracts;
 using NBomber.CSharp;
 
@@ -181,6 +184,7 @@ open System.Net.Http
 
 open FSharp.Control.Tasks.NonAffine
 
+open NBomber
 open NBomber.Contracts
 open NBomber.FSharp
 
@@ -212,6 +216,8 @@ let main argv =
 ```csharp title="Program.cs"
 using System;
 using System.Net.Http;
+
+using NBomber;
 using NBomber.Contracts;
 using NBomber.CSharp;
 
@@ -270,6 +276,7 @@ dotnet add package NBomber.Http
 <TabItem value="F#">
 
 ```fsharp title="Program.fs"
+open NBomber
 open NBomber.Contracts
 open NBomber.FSharp
 open NBomber.Plugins.Http.FSharp
@@ -311,9 +318,12 @@ let main argv =
 
 ```csharp title="Program.cs"
 using System;
-using System.Net.Http;
+
+using NBomber;
 using NBomber.Contracts;
 using NBomber.CSharp;
+using NBomber.Plugins.Http.CSharp;
+using NBomber.Plugins.Network.Ping;
 
 namespace NBomberTest
 {

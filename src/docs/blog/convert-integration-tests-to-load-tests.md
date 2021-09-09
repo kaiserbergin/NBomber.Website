@@ -21,7 +21,7 @@ Let's take a look at a simple integration test where a user tries to log in and 
 
 ```fsharp
 [<Fact>]
-let ``logged user should be able to by product`` () = async {
+let ``logged user should be able to buy a product`` () = async {
 
     let productId = "productId"
     let userName = "userName"
@@ -82,7 +82,7 @@ Now let's see the final example of converting an integration test to a load test
 
 ```fsharp
 [<Fact>]
-let ``load test operation - buy a product`` () = 
+let ``load test operation - to buy a product`` () = 
 
     let productId = "productId"
     let userName = "userName"
