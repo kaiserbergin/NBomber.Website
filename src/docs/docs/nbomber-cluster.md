@@ -1,6 +1,6 @@
 ---
-id: cluster-overview
-title: Cluster overview
+id: nbomber-cluster
+title: NBomber Cluster
 ---
 
 import Tabs from '@theme/Tabs';
