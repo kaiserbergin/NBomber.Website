@@ -1,6 +1,6 @@
 ---
 id: nbomber-cluster
-title: NBomber Cluster
+title: Cluster overview
 ---
 
 import Tabs from '@theme/Tabs';
@@ -44,7 +44,7 @@ Both Coordinator and Agent are the same .NET application but with different JSON
 
 ### Message Broker (MQTT)
 
-Message Broker is a communication point in the cluster. Its main goal is to provide reliable message delivery across the cluster. NBomber Cluster works with any message broker that supports the MQTT protocol. The default setup is one single MQTT node with minimum characteristics (2CPU and 2RAM) will be enough. Such a single MQTT node can serve many concurrent NBomber Clusters without problems. We recommend to use a free version of [EMQ X broker](https://www.emqx.io/). In the following section we will setup EMQX broker using [Docker](https://www.docker.com/).
+Message Broker is a communication point in the cluster. Its main goal is to provide reliable message delivery across the cluster. NBomber Cluster works with any message broker that supports the MQTT protocol. The default setup is one single MQTT node with minimum characteristics (2CPU and 2RAM) will be enough. Such a single MQTT node can serve many concurrent NBomber Clusters without problems. We recommend using a free version of [EMQ X broker](https://www.emqx.io/). In the following section we will setup EMQX broker using [Docker](https://www.docker.com/).
 
 ### Coordinator
 
