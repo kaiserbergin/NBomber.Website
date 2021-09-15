@@ -11,18 +11,18 @@ import ClusterPushFlowImage from '@site/static/img/cluster/cluster-push-flow.png
 import ClusterHighlevelSchemaImage from '@site/static/img/cluster/cluster-highlevel-schema.png';
 import ClusterAgentGroupsImage from '@site/static/img/cluster/cluster-agent-groups.png';
 
-This document will help you learn about NBomber Cluster. NBomber Cluster is an additional runtime component that can run NBomber tests in a distributed way (on the multiple nodes) with flexible orchestration and stats gathering. NBomber Cluster is available in the [Enterprise](https://nbomber.com/#download) version, including a free trial period.
+This document will help you learn about NBomber Cluster. NBomber Cluster is an additional runtime component that can run NBomber tests in a distributed way (on multiple nodes) with flexible orchestration and stats gathering. NBomber Cluster is available in the [Enterprise](https://nbomber.com/#download) version, including a free trial period.
 
 :::note
-We assume that you already familiar with basics of [NBomber API](general-concepts) and can create and run simple load tests. Also, you should be familiar with configuring your tests via [JSON configuration](json-config).
+We assume that you are already familiar with the basics of [NBomber API](general-concepts) and can create and run simple load tests. Also, you should be familiar with configuring your tests via [JSON configuration](json-config).
 :::
 
 ## Why do you need the cluster?
 
-1. You reached the point that the capacity of one node is not enough to create a relevant load, and you want to run parallel execution of scenarios on multiple nodes.
+1. You have reached the point that the capacity of one node is not enough to create a relevant load, and you want to run parallel execution of scenarios on multiple nodes.
 <center><img src={ClusterAllNodesImage} width="50%" height="50%" /></center>
 
-2. You want to segregate multiple scenarios to different nodes. For example, you want to test the database by sending in parallel INSERT, READ and DELETE requests. In this case, you can spread your load granularly: one node can send INSERT requests, and another one can send READ or DELETE requests.
+2. You want to segregate multiple scenarios to different nodes. For example, you want to test the database by sending INSERT, READ and DELETE requests in parallel. In this case, you can spread your load granularly: one node can send INSERT requests, and another one can send READ or DELETE requests.
 <center><img src={ClusterSegregationImage} width="70%" height="70%" /></center>
 
 3. You may need to have several nodes to simulate a production load, especially in geo-distributed mode. In this example, one NBomber node (on the left side) is publishing messages to Kafka and other NBomber nodes (on the right side) are listening to PUSH messages from the Push servers and calculate latency and throughput.
@@ -30,7 +30,7 @@ We assume that you already familiar with basics of [NBomber API](general-concept
 
 ## What are the components of the cluster?
 
-NBomber Cluster consists of 3 main components: `Coordinator`, `Agent`, `Message Broker`. 
+NBomber Cluster consists of 3 main components: `Coordinator`, `Agent` and `Message Broker`. 
 
 - `Coordinator` is responsible for coordinating the execution of the entire test. It sends commands and executes scenarios.
 - `Agent` is responsible for listening to the commands from the `Coordinator`, executing scenarios, sending stats.
@@ -44,19 +44,19 @@ Both Coordinator and Agent are the same .NET application but with different JSON
 
 ### Message Broker (MQTT)
 
-Message Broker is a communication point in the cluster. Its main goal is to provide reliable message delivery across the cluster. NBomber Cluster works with any message broker that supports the MQTT protocol. The default setup is one single MQTT node with minimum characteristics (2CPU and 2RAM) will be enough. Such a single MQTT node can serve many concurrent NBomber Clusters without problems. We recommend using a free version of [EMQ X broker](https://www.emqx.io/). In the following section we will setup EMQX broker using [Docker](https://www.docker.com/).
+Message Broker is a communication point in the cluster. The main goal of the message broker is to provide reliable message delivery across the cluster. NBomber Cluster works with any message broker that supports the MQTT protocol. In the default setup, one single MQTT node with minimum characteristics (2CPU and 2RAM) will be enough. Such a single MQTT node can serve many concurrent NBomber Clusters with no problems. We recommend using a free version of [EMQ X broker](https://www.emqx.io/). In the following section we will setup EMQX broker using [Docker](https://www.docker.com/).
 
 ### Coordinator
 
-Coordinator is the main component that contains registered [Scenarios](general-concepts#scenario) and is responsible for coordinating the execution of the entire test, including gathering all statistics from the Agents. The coordination process is lightweight and doesn't take many resources. For that reason, you should use the Coordinator not only for orchestration but also execute Scenarios.
+Coordinator is the main component that contains registered [Scenarios](general-concepts#scenario) and is responsible for coordinating the execution of the entire test, including gathering all statistics from Agents. The coordination process is lightweight and doesn't take many resources. For these reasons, you should use Coordinator not only for orchestration but also to execute Scenarios.
 
 :::note
-There should be only one Coordinator per cluster. So if you have 10 clusters, it means that you have 10 Coordinators. You can have an unlimited number of Agents per cluster.
+There should be only one Coordinator per cluster. So if you have 10 clusters, it means that you have 10 Coordinators. You can have unlimited number of Agents per cluster.
 :::
 
 #### Coordinator JSON config
 
-Here is a basic example of the Coordinator configuration. Pay attention to property `TargetScenarios` - it plays a significant role and forms the topology of test execution.
+Here is a basic example of Coordinator configuration. Pay attention to property `TargetScenarios` - it plays a significant role and forms topology of test execution.
 
 ```json {8} title="coordinator-config.json"
 {
@@ -77,13 +77,13 @@ Here is a basic example of the Coordinator configuration. Pay attention to prope
 }
 ```
 
-As you can see in the Coordinator config, we specified what scenarios will be executed on the Coordinator.
+As you can see in Coordinator config, we specified what scenarios will be executed on Coordinator.
 
 ```json
 "TargetScenarios": ["insert_mongo"]
 ``` 
 
-And what scenarios will be executed on Agents (AgentGroup will be described in the section about Agent).
+Scenarios that will be executed on Agents (AgentGroup will be described in the section about Agent):
 
 ```json
 "Agents": [
@@ -92,7 +92,7 @@ And what scenarios will be executed on Agents (AgentGroup will be described in t
 ]
 ``` 
 
-All cluster participants should have the same ClusterId. This way, they will see each other.
+All cluster participants should have the same ClusterId because, it will allow them to see each other.
 
 ```json
 "ClusterId": "my_test_cluster",
@@ -100,7 +100,7 @@ All cluster participants should have the same ClusterId. This way, they will see
 "MqttPort": 1883
 ``` 
 
-Coordiantor config can also contains `GlobalSettings` from regular NBomber [JSON configuration](json-config). After the Coordinator starts and reads the config file, it will send all settings to the Agents.
+Coordinator config can also contain `GlobalSettings` from regular NBomber [JSON configuration](json-config). After Coordinator starts and reads the config file, it will send all settings to Agents.
 
 ```json {20} title="coordinator-config.json"
 {
@@ -145,17 +145,17 @@ Coordiantor config can also contains `GlobalSettings` from regular NBomber [JSON
 
 ### Agent
  
-Agent acts as a worker who listens to commands from the Coordinator and executes the `TargetScenarios`. The Agent contains registered Scenarios (the same as the Coordinator) to run them. 
+Agent acts as a worker who listens to commands from Coordinator and executes the `TargetScenarios`. Agent contains registered Scenarios (similar to Coordinator) to run them. 
 
 #### Agent Group
 
-Another feature of the Agent is the mandatory binding to the AgentGroup. An AgentGroup provides a group of agents that execute the specified scenarios associated with this group. An AgentGroup can contain either one Agent or many. You can think of an AgentGroup like tagging for the Agent. You can have as many AgentGroups as you want, they are virtual. 
+Another feature of Agent is the mandatory binding to AgentGroup. An AgentGroup provides a group of agents that execute the specified scenarios associated with this group. An AgentGroup can contain either one Agent or many. You can think of an AgentGroup like tagging for an Agent. You can have as many AgentGroups as you want,as they are virtual. 
 
 <center><img src={ClusterAgentGroupsImage} width="80%" height="80%" /></center>
 
 #### Agent JSON config
 
-Here is an example of the agent config file. In this example, we define the agent that is bound to `"AgentGroup": "1"`. As you can see, we don't specify `TargetScenarios` since these options will be passed dynamically by the Coordinator. So the Agent doesn't know what scenarios will be started until receiving a list of `TargetScenarios` from the Coordinator.
+Here is an example of Agent config file. In this example, we define Agent that is bound to `"AgentGroup": "1"`. As you can see, we don't specify `TargetScenarios` since these options will be passed dynamically by Coordinator. So Agent doesn't know what scenarios will be started until receiving a list of `TargetScenarios` from Coordinator.
 
 ```json {7} title="agent-config.json"
 {
@@ -210,7 +210,7 @@ dotnet add package NBomber.Cluster
 ### Create hello world load test
 
 :::note
-We assume that you already familiar with basics of [NBomber API](general-concepts) and can create and run simple load tests. Also, you should be familiar with configuring your tests via [JSON configuration](json-config).
+We assume that you're familiar with the basics of [NBomber API](general-concepts) and can create and run simple load tests. You should also be familiar with configuring your tests via [JSON configuration](json-config).
 :::
 
 NBomber Cluster has the same API as a regular NBomber except:
@@ -219,7 +219,7 @@ NBomber Cluster has the same API as a regular NBomber except:
 - NBomber Cluster uses `NBomberClusterRunner` instead of `NBomberRunner`. But it has all the API functions that `NBomberRunner` contains.
 - NBomber Cluster uses a bit extended [JSON Configuration](json-config) (it contains `ClusterSettings`) to setup Coordinator or Agent. 
 
-Let's first start with an empty hello world example. In this example, we will define one simple Step and Scenario which does nothing. After this, we will add the Coordinator and the Agent configs to run them in the cluster mode.
+Let's first start with an empty hello world example. In this example, we will define one simple Step and Scenario which does nothing. After this, we will add Coordinator and Agent configs to run them in the cluster mode.
 
 <Tabs
   groupId="example"
@@ -301,7 +301,7 @@ namespace NBomberTest
 </TabItem>
 </Tabs>
 
-If we run this example, it will behave as a regular NBomber test since we didn't define any cluster yet. To build a cluster, we need to define configs for Agent and Coordinator and aftewards connect them to Message Broker.
+If we run this example, it will behave as a regular NBomber test since we didn't define any cluster yet. To build a cluster, we need to define configs for Agent and Coordinator; and then connect them to Message Broker.
 
 ### Start Message Broker (MQTT)
 
@@ -336,7 +336,7 @@ You can use admin panel for diagnostic purposes.
 
 ### Start Agent
 
-Let's first start with Agent since it's simpler, and it should start before the Coordinator (Agent should listen to commands from the Coordinator). The main thing for us is to define and load the Agent config (agent_config.json).
+Let's start with Agent since it's simpler. It should start before Coordinator (as Agent should listen to commands from Coordinator). The main thing for us is to define and load Agent config (agent_config.json).
 
 ```fsharp
 NBomberClusterRunner.registerScenario scenario
@@ -344,7 +344,7 @@ NBomberClusterRunner.registerScenario scenario
 |> NBomberClusterRunner.run
 ```
 
-Here is an example of the Agent config that we load. We see that `ClusterSettings` contains `Agent` settings with connection params to the MQTT broker. For dev purposes, we are going to use localhost and default MQTT port `1883`. All cluster participants should have the same `ClusterId`. This way, they will see each other. Another quite important option is `AgentGroup`, which should be treated like tagging. Also, you can see that we didn't specify any `TargetScenarios` to run, it's because the Agent will receive from the Coordinator the list of Scenarios to be run plus `ScenarioSettings`.
+Here is an example of Agent config that we load. We see that `ClusterSettings` contains `Agent` settings with connection params to the MQTT broker. For dev purposes, we are going to use the localhost and default MQTT port `1883`. All cluster participants should have the same `ClusterId`. This way, they will see each other. Another quite important option is `AgentGroup`, which should be treated like tagging. Also, you can see that we didn't specify any `TargetScenarios` to run. It's because Agent will receive the list of Scenarios from Coordinator to be run plus `ScenarioSettings`.
 
 ```json title="agent-config.json"
 {
@@ -370,7 +370,7 @@ NBomberClusterRunner.registerScenario scenario
 |> ignore
 ```
 
-Here is an example of the Coordiantor config that we load.
+Here is an example of Coordiantor config that we load.
 
 ```json title="coordinator_config.json"
 {
@@ -390,13 +390,13 @@ Here is an example of the Coordiantor config that we load.
 }
 ```
 
-In Coordinator config we defined `TargetScenarios` to run on the Coordinator.
+In Coordinator config we defined `TargetScenarios` to run on Coordinator.
 
 ```json
 "TargetScenarios": ["hello_world"]
 ```
 
-And also we defined `TargetScenarios` for the Agents (via AgentGroup).
+And also we defined `TargetScenarios` for Agents (via AgentGroup).
 
 ```json
 "Agents": [
@@ -406,7 +406,7 @@ And also we defined `TargetScenarios` for the Agents (via AgentGroup).
 
 ### Load config file dynamically
 
-Instead of a hardcode file path you can use CLI arguments.
+Instead of hardcoded file path you can use CLI arguments.
 
 <Tabs
   groupId="example"
