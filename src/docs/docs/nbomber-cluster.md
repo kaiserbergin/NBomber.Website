@@ -367,7 +367,6 @@ Coordinator contains the same list of scenarios as Agent but uses a different co
 NBomberClusterRunner.registerScenario scenario
 |> NBomberClusterRunner.loadConfig "coordinator_config.json"
 |> NBomberClusterRunner.run
-|> ignore
 ```
 
 Here is an example of Coordiantor config that we load.
