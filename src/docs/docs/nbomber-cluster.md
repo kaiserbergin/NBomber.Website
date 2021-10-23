@@ -48,10 +48,10 @@ Message Broker is a communication point in the cluster. The main goal of the mes
 
 ### Coordinator
 
-Coordinator is the main component that contains registered [Scenarios](general-concepts#scenario) and is responsible for coordinating the execution of the entire test, including gathering all statistics from Agents. The coordination process is lightweight and doesn't take many resources. For these reasons, you should use Coordinator not only for orchestration but also to execute Scenarios.
+Coordinator is the main component that contains registered [Scenarios](general-concepts#scenario) and is responsible for coordinating the execution of the entire test, including gathering all statistics from Agent(s). The coordination process is lightweight and doesn't take many resources. For these reasons, you should use Coordinator not only for orchestration but also to execute Scenarios.
 
 :::note
-There should be only one Coordinator per cluster. So if you have 10 clusters, it means that you have 10 Coordinators. You can have unlimited number of Agents per cluster.
+There should be only one Coordinator per cluster. So if you have 10 clusters, it means that you have 10 Coordinators. You can have unlimited number of Agent(s) per cluster.
 :::
 
 #### Coordinator JSON config
@@ -83,7 +83,7 @@ As you can see in Coordinator config, we specified what scenarios will be execut
 "TargetScenarios": ["insert_mongo"]
 ``` 
 
-Scenarios that will be executed on Agents (AgentGroup will be described in the section about Agent):
+Scenarios that will be executed on Agent(s) (AgentGroup will be described in the section about Agent):
 
 ```json
 "Agents": [
@@ -100,7 +100,11 @@ All cluster participants should have the same ClusterId because, it will allow t
 "MqttPort": 1883
 ``` 
 
-Coordinator config can also contain `GlobalSettings` from regular NBomber [JSON configuration](json-config). After Coordinator starts and reads the config file, it will send all settings to Agents.
+Coordinator config can also contain `GlobalSettings` from regular NBomber [JSON configuration](json-config). 
+
+:::important
+After Coordinator starts and reads the config file, it will send all settings to Agent(s). So if you want to change some settings you can edit the config file and restart Coordinator. Coordinator will distribute new settings to all Agent(s).
+:::
 
 ```json {20} title="coordinator-config.json"
 {
@@ -149,7 +153,7 @@ Agent acts as a worker who listens to commands from Coordinator and executes the
 
 #### Agent Group
 
-Another feature of Agent is the mandatory binding to AgentGroup. An AgentGroup provides a group of agents that execute the specified scenarios associated with this group. An AgentGroup can contain either one Agent or many. You can think of an AgentGroup like tagging for an Agent. You can have as many AgentGroups as you want,as they are virtual. 
+Another feature of Agent is the mandatory binding to AgentGroup. An AgentGroup provides a group of Agent(s) that execute the specified scenarios associated with this group. An AgentGroup can contain either one Agent or many. You can think of an AgentGroup like tagging for an Agent. You can have as many AgentGroups as you want,as they are virtual. 
 
 <center><img src={ClusterAgentGroupsImage} width="80%" height="80%" /></center>
 
@@ -215,9 +219,9 @@ We assume that you're familiar with the basics of [NBomber API](general-concepts
 
 NBomber Cluster has the same API as a regular NBomber except:
 
-
 - NBomber Cluster uses `NBomberClusterRunner` instead of `NBomberRunner`. But it has all the API functions that `NBomberRunner` contains.
 - NBomber Cluster uses a bit extended [JSON Configuration](json-config) (it contains `ClusterSettings`) to setup Coordinator or Agent. 
+- NBomber Cluster requires to set license key.
 
 Let's first start with an empty hello world example. In this example, we will define one simple Step and Scenario which does nothing. After this, we will add Coordinator and Agent configs to run them in the cluster mode.
 
@@ -256,6 +260,7 @@ let main argv =
     
     // here as you can see, we use NBomberClusterRunner instead of NBomberRunner
     NBomberClusterRunner.registerScenario scenario
+    |> NBomberClusterRunner.withLicense "YOUR_LICENSE_KEY"
     |> NBomberClusterRunner.run
     |> ignore    
 
@@ -292,6 +297,7 @@ namespace NBomberTest
             // here as you can see, we use NBomberClusterRunner instead of NBomberRunner
             NBomberClusterRunner
                 .RegisterScenarios(scenario)
+                .WithLicense("YOUR_LICENSE_KEY")
                 .Run();            
         }
     }
@@ -341,6 +347,7 @@ Let's start with Agent since it's simpler. It should start before Coordinator (a
 ```fsharp
 NBomberClusterRunner.registerScenario scenario
 |> NBomberClusterRunner.loadConfig "agent_config.json"
+|> NBomberClusterRunner.withLicense "YOUR_LICENSE_KEY"
 |> NBomberClusterRunner.run
 ```
 
@@ -361,11 +368,12 @@ Here is an example of Agent config that we load. We see that `ClusterSettings` c
 
 ### Start Coordinator
 
-Coordinator contains the same list of scenarios as Agent but uses a different config file and should be started after all Agents.
+Coordinator contains the same list of scenarios as Agent but uses a different config file and should be started after all Agent(s).
 
 ```fsharp
 NBomberClusterRunner.registerScenario scenario
 |> NBomberClusterRunner.loadConfig "coordinator_config.json"
+|> NBomberClusterRunner.withLicense "YOUR_LICENSE_KEY"
 |> NBomberClusterRunner.run
 ```
 
@@ -395,7 +403,7 @@ In Coordinator config we defined `TargetScenarios` to run on Coordinator.
 "TargetScenarios": ["hello_world"]
 ```
 
-And also we defined `TargetScenarios` for Agents (via AgentGroup).
+And also we defined `TargetScenarios` for Agent(s) (via AgentGroup).
 
 ```json
 "Agents": [
@@ -403,9 +411,9 @@ And also we defined `TargetScenarios` for Agents (via AgentGroup).
 ]
 ```
 
-### Load config file dynamically
+### Load config file and license dynamically
 
-Instead of hardcoded file path you can use CLI arguments.
+Instead of hardcoded file path and license key you can use CLI arguments.
 
 <Tabs
   groupId="example"
@@ -424,11 +432,12 @@ let main argv =
     // The following CLI commands are supported:
     // -c or --config: loads configuration,
     // -i or --infra: loads infrastructure configuration.
+    // -l or --license: loads license key
     
     NBomberClusterRunner.registerScenarios [scenario1; scenario2; scenario3]
     |> NBomberClusterRunner.runWithArgs argv
-    //|> NBomberClusterRunner.runWithArgs ["--config=agent-config.json"]
-    //|> NBomberClusterRunner.runWithArgs ["--config=coordinator-config.json"]
+    //|> NBomberClusterRunner.runWithArgs ["--config=agent-config.json --license=YOUR_LICENSE_KEY"]
+    //|> NBomberClusterRunner.runWithArgs ["--config=coordinator-config.json --license=YOUR_LICENSE_KEY"]
 ```
 
 </TabItem>
@@ -441,12 +450,13 @@ static void Main(string[] args)
     // The following CLI commands are supported:
     // -c or --config: loads configuration,
     // -i or --infra: loads infrastructure configuration.
+    // -l or --license: loads license key
 
     NBomberClusterRunner
         .RegisterScenarios(scenario1, scenario2, scenario3)                
         .Run(args);
-        //.Run("--config=agent-config.json")
-        //.Run("--config=coordinator-config.json")
+        //.Run("--config=agent-config.json --license=YOUR_LICENSE_KEY")
+        //.Run("--config=coordinator-config.json --license=YOUR_LICENSE_KEY")
 }
 ```
 

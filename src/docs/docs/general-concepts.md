@@ -1852,7 +1852,36 @@ NBomberRunner.registerScenarios [scenario1; scenario2; scenario3]
 |> NBomberRunner.loadInfraConfig "infra-config.json"
 ```
 
-Instead of a hardcode file path you can use CLI arguments:
+</TabItem>
+
+<TabItem value="C#">
+
+```csharp
+NBomberRunner
+    .RegisterScenarios(scenario1, scenario2, scenario3)
+    // loads test configuration
+    .LoadConfig("config.json")
+    
+    // loads infrastructure configuration
+    .LoadInfraConfig("infra-config.json");
+```
+
+</TabItem>
+</Tabs>
+
+### Load config file dynamically
+
+Instead of hardcoded file path you can use CLI arguments.
+
+<Tabs
+  groupId="example"
+  defaultValue="F#"
+  values={[
+    {label: 'F#', value: 'F#'},
+    {label: 'C#', value: 'C#'},
+  ]
+}>
+<TabItem value="F#">
 
 ```fsharp
 [<EntryPoint>]
@@ -1870,18 +1899,6 @@ let main argv =
 </TabItem>
 
 <TabItem value="C#">
-
-```csharp
-NBomberRunner
-    .RegisterScenarios(scenario1, scenario2, scenario3)
-    // loads test configuration
-    .LoadConfig("config.json")
-    
-    // loads infrastructure configuration
-    .LoadInfraConfig("infra-config.json");
-```
-
-Instead of a hardcode file path you can use CLI arguments:
 
 ```csharp
 class Program

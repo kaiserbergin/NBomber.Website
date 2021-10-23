@@ -1,6 +1,6 @@
 ---
-id: docker-setup
-title: Docker setup
+id: local-environment
+title: Local environment
 ---
 
 :::note
@@ -11,7 +11,7 @@ Installation prerequisites
 
 ## Infrastracture setup
 
-Here you find the docker-compose file to setup basic infrastracture for logging and realtime metrics. Just save it in your project folder and run.
+Here you find the *docker-compose* file to setup basic infrastracture for logging and realtime metrics. Just save it in your project folder and run.
 
 ```code
 // to start, use:

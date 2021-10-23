@@ -53,7 +53,7 @@ Let's consider a basic example of a load test configuration file.
 }
 ```
 
-In order to load such config into NBomber test, you should use `NBomberRunner.loadConfig`. After this, NBomber will apply the loaded configuration.
+In order to load such config into NBomber test, you should use `NBomberRunner.loadConfig`. After this, NBomber will apply the loaded configuration. You can read more about loading configs [here](general-concepts#load-configuration-file).
 
 <Tabs
   groupId="example"
@@ -615,7 +615,7 @@ Let's consider a basic example of an infrastructure configuration file.
 }
 ```
 
-In order to load such config into NBomber test, you should use `NBomberRunner.loadInfraConfig`. After this, NBomber will apply the loaded configuration.
+In order to load such config into NBomber test, you should use `NBomberRunner.loadInfraConfig`. After this, NBomber will apply the loaded configuration. You can read more about loading configs [here](general-concepts#load-configuration-file).
 
 <Tabs
   groupId="example"
