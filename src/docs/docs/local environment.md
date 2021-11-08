@@ -22,7 +22,7 @@ docker-compose down
 ```
 
 ```yaml title="docker-compose.yaml"
-version: '3.4'
+version: '3'
 services:
   
   influxdb:

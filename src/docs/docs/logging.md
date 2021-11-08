@@ -96,7 +96,7 @@ Structured log events (messages) are written to sinks and each sink is responsib
 
 :::
 
-Serilog supports many data storages and corresponding sinks to save your logs. You can check out the whole list of provided sinks [here](https://github.com/serilog/serilog/wiki/Provided-Sinks).
+Serilog supports many data storages and corresponding sinks to save your logs. You can check out the [whole list of provided sinks](https://github.com/serilog/serilog/wiki/Provided-Sinks).
 
 Serilog logger is configured via LoggerConfiguration object. Here is a very basic example of changing minimum log level.
 
@@ -218,6 +218,16 @@ Some of NBomber plugins support tracing. By enabling it, NBomber logger will log
 NBomberRunner.withLoggerConfig(fun () ->    
     LoggerConfiguration().MinimumLevel.Verbose() 
 )
+```
+
+Also, you can enable tracing via the [infrastructure config file](json-config#infrastructure-configuration).
+
+```json title="infra-config.json"
+{
+    "Serilog": {
+        "MinimumLevel": "Verbose"
+    }
+}
 ```
 
 ## Elasticsearch integration

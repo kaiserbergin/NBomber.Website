@@ -1,25 +1,59 @@
 ---
 id: plugins-ping
-title: Ping plugin
+title: PING plugin
 ---
 
-For any load testing, you need to know physical latency between the target system and the test agent. For these purposes, NBomber has a Ping plugin that runs in the background and checks the specified web host by sending a PING request to measure the latency. It sends a PING only once on the test start.
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+
+For any load testing, you need to know physical latency between the target system and the test agent. For these purposes, NBomber has a Ping plugin that runs in the background on start-up and checks the specified web host by sending a PING request to measure the latency. It sends a PING only once on the test start.
 
 ## API
+
+<Tabs
+  groupId="example"
+  defaultValue="F#"
+  values={[
+    {label: 'F#', value: 'F#'},
+    {label: 'C#', value: 'C#'},
+  ]
+}>
+<TabItem value="F#">
 
 ```fsharp
 open NBomber.Plugins.Network.Ping
 
 /// scenario defination.....
 
-let pingPluginConfig = PingPluginConfig.CreateDefault ["nbomber.com"]
-use pingPlugin = new PingPlugin(pingPluginConfig)
+let pingPluginConfig = PingPluginConfig.CreateDefault "nbomber.com"
+let pingPlugin = new PingPlugin(pingPluginConfig)
 
 Scenario.create "rest_api" [getUser; getPosts]
 |> NBomberRunner.registerScenario
 |> NBomberRunner.withWorkerPlugins [pingPlugin]
 |> NBomberRunner.run
 ```
+
+</TabItem>
+
+<TabItem value="C#">
+
+```csharp
+using NBomber.Plugins.Network.Ping;
+
+/// scenario defination.....
+
+var pingPluginConfig = PingPluginConfig.CreateDefault("nbomber.com");
+var pingPlugin = new PingPlugin(pingPluginConfig);
+
+NBomberRunner
+    .RegisterScenarios(scenario)
+    .WithWorkerPlugins(pingPlugin)
+    .Run();
+```
+
+</TabItem>
+</Tabs>
 
 > **Ping statistics table results**
 
@@ -54,7 +88,7 @@ type PingPluginConfig = {
 }
 ```
 
-This plugin is allowing dynamic configuration via the infrastructure config file.
+This plugin is allowing dynamic configuration via the [infrastructure config file](json-config#infrastructure-configuration).
 
 ```json title="infra-config.json"
 {
@@ -68,10 +102,43 @@ This plugin is allowing dynamic configuration via the infrastructure config file
 }
 ```
 
+To load the configuration into the plugin, we should create an empty instance of the plugin (without any configuration) and pass `infra-config.json` into `NBomberRunner`. After this plugin will be initialized by `infra-config.json`.
+
+<Tabs
+  groupId="example"
+  defaultValue="F#"
+  values={[
+    {label: 'F#', value: 'F#'},
+    {label: 'C#', value: 'C#'},
+  ]
+}>
+<TabItem value="F#">
+
 ```fsharp
+let pingPlugin = new PingPlugin() // create empty instance
+
 Scenario.create "rest_api" [getUser; getPosts]
 |> NBomberRunner.registerScenario
-|> NBomberRunner.withWorkerPlugins [new PingPlugin()] // we set empty instance
-|> NBomberRunner.loadInfraConfig "infra-config.json"
+|> NBomberRunner.withWorkerPlugins [pingPlugin] 
+|> NBomberRunner.loadInfraConfig "infra-config.json" // load config
 |> NBomberRunner.run
 ```
+
+</TabItem>
+
+<TabItem value="C#">
+
+```csharp
+/// scenario defination.....
+
+var pingPlugin = new PingPlugin(); // create empty instance
+
+NBomberRunner
+    .RegisterScenarios(scenario)
+    .WithWorkerPlugins(pingPlugin)
+    .LoadInfraConfig("infra-config.json") // load config
+    .Run();
+```
+
+</TabItem>
+</Tabs>
