@@ -8,12 +8,12 @@ import TabItem from '@theme/TabItem';
 
 This document will help you learn about NBomber.HTTP plugin in more detail.
 
-- [Overview](plugins-http#overview)
-- [HTTP API](plugins-http#http-api)
-- [HTTP ClientFactory](plugins-http#http-clientfactory)
-- [Tracing](plugins-http#tracing)
-- [JSON parsing](plugins-http#json-parsing)
-- [Best practices](plugins-http#best-practices)
+- [Overview](#overview)
+- [HTTP API](#http-api)
+- [HTTP ClientFactory](#http-clientfactory)
+- [Tracing](#tracing)
+- [JSON parsing](#json-parsing)
+- [Best practices](#best-practices)
 
 ## Overview
 

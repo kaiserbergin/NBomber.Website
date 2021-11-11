@@ -8,10 +8,10 @@ import TabItem from '@theme/TabItem';
 
 This document will help you learn about logging in NBomber tests, options to configure, and introduce Serilog logger and sinks.
 
-- [Logging in NBomber tests](logging#logging-in-nbomber-tests)
-- [Configuring logging](logging#configuring-logging)
-- [Enabling tracing](logging#enabling-tracing)
-- [Elasticsearch integration](logging#elasticsearch-integration)
+- [Logging in NBomber tests](#logging-in-nbomber-tests)
+- [Configuring logging](#configuring-logging)
+- [Enabling tracing](#enabling-tracing)
+- [Elasticsearch integration](#elasticsearch-integration)
 
 ## Logging in NBomber tests
 

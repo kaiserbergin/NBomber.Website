@@ -11,7 +11,13 @@ import ClusterPushFlowImage from '@site/static/img/cluster/cluster-push-flow.png
 import ClusterHighlevelSchemaImage from '@site/static/img/cluster/cluster-highlevel-schema.png';
 import ClusterAgentGroupsImage from '@site/static/img/cluster/cluster-agent-groups.png';
 
-This document will help you learn about NBomber Cluster. NBomber Cluster is an additional runtime component that can run NBomber tests in a distributed way (on multiple nodes) with flexible orchestration and stats gathering. NBomber Cluster is available in the [Enterprise](https://nbomber.com/#download) version, including a free trial period.
+This document will help you learn about NBomber Cluster. NBomber Cluster is available in the [Enterprise](https://nbomber.com/#download) version, including a free trial period.
+
+- [Why do you need the cluster?](#why-do-you-need-the-cluster)
+- [What are the components of the cluster?](#what-are-the-components-of-the-cluster)
+- [Step by step introduction](#step-by-step-introduction)
+
+NBomber Cluster is an additional runtime component that can run NBomber tests in a distributed way (on multiple nodes) with flexible orchestration and stats gathering. 
 
 :::note
 We assume that you are already familiar with the basics of [NBomber API](general-concepts) and can create and run simple load tests. Also, you should be familiar with configuring your tests via [JSON configuration](json-config).

@@ -8,7 +8,7 @@ import TabItem from '@theme/TabItem';
 
 This document will help you learn about NBomber plugins and plugin development in more detail. NBomber provides a concept of plugins that you can use to extend the functionality of NBomber. A good example would be [Http](plugins-http) plugin which provides a convenient API for working with HTTP protocol. Here is a list of existing plugins that you can use in your projects.
 
-- [Ping plugin](plugins-ping) - a plugin that executes ping logic to gather networking metrics.
+- [PING plugin](plugins-ping) - a plugin that executes ping logic to gather networking metrics.
 - [HTTP plugin](plugins-http) - a simple DSL plugin for working with HTTP.
 - [K8s plugin](#) - *in developemnt*.
 - [AMQP plugin](#) - *in developemnt*.

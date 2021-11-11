@@ -823,7 +823,90 @@ var step = Step.Create("step", async context =>
 
 ## DataFeed
 
-DataFeed helps inject test data into your load test. It represents a data source. Let see how you can inject test data in your test and use Step.context to integrate it within your steps.
+DataFeed helps inject test data into your load test. It represents a data source. 
+
+### DataFeed Types
+
+- `Circular` - DataFeed that goes back to the top of the sequence once the end is reached. 
+- `Random` - DataFeed that randomly picks an item per Step invocation.
+- `Constant` - DataFeed that picks constant value per Step copy instance.
+
+### DataFeed API
+
+<Tabs
+  groupId="example"
+  defaultValue="F#"
+  values={[
+    {label: 'F#', value: 'F#'},
+    {label: 'C#', value: 'C#'},
+  ]
+}>
+<TabItem value="F#">
+
+```fsharp
+// load data
+let numbers = [1; 2; 3; 4; 5] |> FeedData.shuffleData
+let jsonUsers = FeedData.fromJson<User>("./DataFeed/users-feed-data.json")
+let csvUsers = FeedData.fromCsv<User>("./DataFeed/users-feed-data.csv")
+
+// creates Feed that goes back to the top of the sequence once the end is reached.
+let feed = numbers |> Feed.createCircular "numbers"
+
+// creates Feed (in lazy mode) that goes back to the top of the sequence once the end is reached.
+let feed = Feed.createCircularLazy "numbers" (fun context -> seq { yield! numbers })
+
+// creates Feed that picks constant value per Step copy.
+// every Step copy will have unique constant value.
+let feed = jsonUsers |> Feed.createConstant "users"
+
+// creates Feed (in lazy mode) that picks constant value per Step copy.
+// every Step copy will have unique constant value.
+let feed = Feed.createConstantLazy "users" (fun context -> seq { yield! jsonUsers })
+
+// creates Feed that randomly picks an item per Step invocation.
+let feed = csvUsers |> Feed.createRandom "users"
+
+// creates Feed (in lazy mode) that randomly picks an item per Step invocation.
+let feed = Feed.createRandomLazy "users" (fun context -> seq { yield! csvUsers })
+```
+
+</TabItem>
+
+<TabItem value="C#">
+
+```csharp
+// load data
+var numbers = new[] {1, 2, 3, 4, 5}.ShuffleData();
+var jsonUsers = FeedData.FromJson<User>("./DataFeed/users-feed-data.json");
+var csvUsers = FeedData.FromCsv<User>("./DataFeed/users-feed-data.csv");
+
+// creates Feed that goes back to the top of the sequence once the end is reached.
+var feed = Feed.CreateCircular("numbers", numbers);
+
+// creates Feed (in lazy mode) that goes back to the top of the sequence once the end is reached.
+var feed = Feed.CreateCircularLazy("numbers", getData: context => numbers);
+
+// creates Feed that picks constant value per Step copy.
+// every Step copy will have unique constant value.
+var feed = Feed.CreateConstant("users", jsonUsers);
+
+// creates Feed (in lazy mode) that picks constant value per Step copy.
+// every Step copy will have unique constant value.
+var feed = Feed.CreateConstantLazy("users", getData: context => jsonUsers);
+
+// creates Feed that randomly picks an item per Step invocation.
+var feed = Feed.CreateRandom("users", csvUsers);
+
+// creates Feed (in lazy mode) that randomly picks an item per Step invocation.
+var feed = Feed.CreateRandomLazy("users", getData: context => csvUsers);
+```
+
+</TabItem>
+</Tabs>
+
+### DataFeed usage
+
+Let see how you can inject test data in your test and use `StepContext.FeedItem` to integrate it within your steps.
 
 <Tabs
   groupId="example"
@@ -1355,8 +1438,8 @@ InjectPerSecRandom(5, 50, during: TimeSpan.FromMinutes(2))  // 3: from 00:00:40 
 ### Load simulations intro
 
 When it comes to load simulation, systems behave in 2 different ways:
-- Closed systems, where you keep a constant number of concurrent clients and they waiting on a response before sending a new request. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients. Usually, in real-world scenarios systems with persisted connections (RabbitMq, Kafka, WebSockets, Databases) are tested as closed systems.
-- Open systems, where you keep arrival rate of new clients requests without waitng on responses. The good example could be some popular website like Amazon. Under the load new clients arrive even though applications have trouble serving them. Usually, in real-world scenarios systems that use stateless protocols like HTTP are tested as open systems.
+- `Closed systems` - where you keep a constant number of concurrent clients and they waiting on a response before sending a new request. A good example will be a database with 20 concurrent clients that constantly repeat sending query then wait for a response and do it again. Under the big load, requests will be queued and this queue will not grow since we have a finite number of clients. Usually, in real-world scenarios systems with persisted connections (RabbitMq, Kafka, WebSockets, Databases) are tested as closed systems.
+- `Open systems` - where you keep arrival rate of new clients requests without waitng on responses. The good example could be some popular website like Amazon. Under the load new clients arrive even though applications have trouble serving them. Usually, in real-world scenarios systems that use stateless protocols like HTTP are tested as open systems.
 
 :::note
 

@@ -19,12 +19,12 @@ NBomber as a modern framework provides:
 - Zero dependencies on protocol (HTTP/WebSockets/AMQP/SQL) 
 - Zero dependencies on semantic model (Pull/Push)
 - Very flexible configuration and dead simple API (F#/C#/JSON)
-- Cluster support
+- [Cluster support](nbomber-cluster)
 - Realtime Reporting
 - CI/CD integration
-- Data feed support
+- [DataFeed support](general-concepts#datafeed)
 
-<!-- - [Cluster support](cluster-overview)
+<!-- - 
 - [Realtime Reporting](reporting-sinks)
 - [Plugins support](plugins-overview)
 - [CI/CD integration](test-automation#cicd-integration)
