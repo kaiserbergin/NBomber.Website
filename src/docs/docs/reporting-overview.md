@@ -3,22 +3,29 @@ id: reporting-overview
 title: Reporting overview
 ---
 
-NBomber provides live metrics which can be persisted and visualised. Also, you will be able to have historicals since data will be persisted and you can analyze performance trends. Usually, metrics persisted in time series database and visualized by [Grafana](https://grafana.com/). Here is a list of ready-made reporting sinks that you can use in your projects: 
+This document will help you learn about NBomber reports (*HTML, MarkDown, CSV, TXT*) and real-time metrics which can be persisted and visualized. NBomber provides a concept of `ReportingSink` that you should use to start sending metrics into your metrics data store. Usually, metrics persisted in time series database ([InfluxDB](https://www.influxdata.com/), [TimeScale](https://www.timescale.com/), [Prometheus](https://prometheus.io/)) and visualized by [Grafana](https://grafana.com/).
+
+Here is Grafana dashboard that you can import.
+
+- [Grafana dashboard](https://github.com/PragmaticFlow/NBomber.Grafana)
+
+Here is a list of existing reporting sinks that you can use in your projects.
 
 - [InfluxDB sink](sinks-influxdb)
-- [Prometheus sink](sinks-prometheus)
+- [TimeScale sink](#) - *in development*.
+- [Prometheus sink](#) - *in development*.
 
 ## Reporting sink development
 
-To develop reporting sink NBomber provides an interface:
+NBomber provides an interface that you should implement to develop your custom `ReportingSink`.
 
 ```fsharp
 type IReportingSink =
     inherit IDisposable
     abstract SinkName: string
-    abstract Init: logger:ILogger * infraConfig:IConfiguration option -> unit
-    abstract Start: testInfo:TestInfo -> Task
-    abstract SaveRealtimeStats: stats:NodeStats[] -> Task
+    abstract Init: context:IBaseContext * infraConfig:IConfiguration -> Task
+    abstract Start: unit -> Task
+    abstract SaveRealtimeStats: stats:ScenarioStats[] -> Task
     abstract SaveFinalStats: stats:NodeStats[] -> Task
     abstract Stop: unit -> Task
 ```

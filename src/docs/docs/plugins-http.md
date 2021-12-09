@@ -19,6 +19,8 @@ This document will help you learn about NBomber.HTTP plugin in more detail.
 
 NBomber.Http provides a simple API to define HTTP steps, calculate response size, apply assertions.
 
+## Installation
+
 Add HTTP package into your project.
 
 ```code
