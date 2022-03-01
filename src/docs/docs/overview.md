@@ -91,7 +91,7 @@ let main argv =
         // for example: send http request, SQL query etc
         // NBomber will measure how much time it takes to execute your step
 
-        do! Task.Delay(seconds 1)
+        do! Task.Delay(milliseconds 500)
         return Response.ok()
     })
 
@@ -133,7 +133,7 @@ namespace NBomberTest
                 // for example: send http request, SQL query etc
                 // NBomber will measure how much time it takes to execute your logic
 
-                await Task.Delay(TimeSpan.FromSeconds(1));
+                await Task.Delay(TimeSpan.FromMilliseconds(500));
                 return Response.Ok();
             });
             
@@ -314,8 +314,6 @@ let main argv =
 ```csharp title="Program.cs"
 using System;
 
-using NBomber;
-using NBomber.Contracts;
 using NBomber.CSharp;
 using NBomber.Plugins.Http.CSharp;
 using NBomber.Plugins.Network.Ping;
@@ -325,16 +323,16 @@ namespace NBomberTest
     class Program
     {
         static void Main(string[] args)
-        {   
-            var step = Step.Create("fetch_html_page", 
-                                   clientFactory: HttpClientFactory.Create(), 
-                                   execute: context =>
-            {
-                var request = Http.CreateRequest("GET", "https://nbomber.com")
-                                  .WithHeader("Accept", "text/html");
+        {
+            var step = Step.Create("fetch_html_page",
+                clientFactory: HttpClientFactory.Create(),
+                execute: context =>
+                {
+                    var request = Http.CreateRequest("GET", "https://nbomber.com")
+                        .WithHeader("Accept", "text/html");
 
-                return Http.Send(request, context);
-            }
+                    return Http.Send(request, context);
+                });
 
             var scenario = ScenarioBuilder
                 .CreateScenario("simple_http", step)
@@ -344,8 +342,8 @@ namespace NBomberTest
                 );
 
             // creates ping plugin that brings additional reporting data
-            var pingPluginConfig = PingPluginConfig.CreateDefault(new[] {"nbomber.com"});
-            var pingPlugin = new PingPlugin(pingPluginConfig);                
+            var pingPluginConfig = PingPluginConfig.CreateDefault(new[] { "nbomber.com" });
+            var pingPlugin = new PingPlugin(pingPluginConfig);
 
             NBomberRunner
                 .RegisterScenarios(scenario)
